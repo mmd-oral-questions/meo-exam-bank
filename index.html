@@ -323,7 +323,6 @@
       <button class="nav-btn active" onclick="showView('home')">Home</button>
       <button class="nav-btn" onclick="showView('submit')">Submit Report</button>
       <button class="nav-btn" onclick="showView('browse')">Browse Questions</button>
-      <button class="nav-btn" onclick="showView('setup')">⚙ Setup</button>
     </nav>
   </div>
 </header>
@@ -388,126 +387,6 @@
     </div>
     <div id="entries-list" class="entries-list">
       <div class="loading"><div class="spinner"></div>Loading...</div>
-    </div>
-  </div>
-
-  <!-- ══ SETUP ══ -->
-  <div id="view-setup" class="view">
-    <div class="setup-card">
-      <h2>Setup & Customise</h2>
-      <div class="setup-subtitle">Connect Google Sheets · Modify Form Fields</div>
-
-      <div class="setup-tabs">
-        <button class="stab active" onclick="switchTab('tab-gsheet')">📊 Google Sheets Setup</button>
-        <button class="stab" onclick="switchTab('tab-fields')">🔧 Modify Form Fields</button>
-      </div>
-
-      <!-- TAB 1: Google Sheets -->
-      <div id="tab-gsheet" class="stab-content active">
-        <div class="step">
-          <div class="step-num">1</div>
-          <div class="step-content">
-            <h3>Create a Google Sheet</h3>
-            <p>Go to <a href="https://sheets.google.com" target="_blank">sheets.google.com</a> → create a new blank sheet. Name it <strong>MEO Exam Bank</strong>.</p>
-            <p>In <strong>Row 1</strong>, type these column headers exactly (one per cell, A to K):</p>
-            <div class="code-block"><span class="highlight">A</span>: Timestamp   <span class="highlight">B</span>: Name      <span class="highlight">C</span>: MMD
-<span class="highlight">D</span>: Date        <span class="highlight">E</span>: Internal  <span class="highlight">F</span>: External
-<span class="highlight">G</span>: ShipType    <span class="highlight">H</span>: ExamClass <span class="highlight">I</span>: Questions
-<span class="highlight">J</span>: Remarks     <span class="highlight">K</span>: Result</div>
-          </div>
-        </div>
-
-        <div class="step">
-          <div class="step-num">2</div>
-          <div class="step-content">
-            <h3>Open Apps Script</h3>
-            <p>In your Google Sheet → click <strong>Extensions</strong> in the top menu → click <strong>Apps Script</strong>. A new tab opens.</p>
-            <p>Delete all existing code in the editor. Then <strong>copy and paste</strong> this entire script:</p>
-            <div class="code-block">function doPost(e) {
-  var sheet = SpreadsheetApp
-    .getActiveSpreadsheet()
-    .getActiveSheet();
-  var data = JSON.parse(e.postData.contents);
-  sheet.appendRow([
-    new Date(),       // Timestamp
-    data.Name,
-    data.MMD,
-    data.Date,
-    data.Internal,
-    data.External,
-    data.ShipType,
-    data.ExamClass,
-    data.Questions,
-    data.Remarks,
-    data.Result
-  ]);
-  return ContentService
-    .createTextOutput(JSON.stringify({status:"ok"}))
-    .setMimeType(ContentService.MimeType.JSON);
-}
-
-function doGet(e) {
-  var sheet = SpreadsheetApp
-    .getActiveSpreadsheet()
-    .getActiveSheet();
-  var rows = sheet.getDataRange().getValues();
-  var headers = rows[0];
-  var data = rows.slice(1).map(function(row) {
-    var obj = {};
-    headers.forEach(function(h, i) { obj[h] = row[i]; });
-    return obj;
-  });
-  return ContentService
-    .createTextOutput(JSON.stringify(data))
-    .setMimeType(ContentService.MimeType.JSON);
-}</div>
-          </div>
-        </div>
-
-        <div class="step">
-          <div class="step-num">3</div>
-          <div class="step-content">
-            <h3>Deploy as Web App</h3>
-            <p>In Apps Script → click <strong>Deploy</strong> (top right) → <strong>New deployment</strong></p>
-            <p>→ Type: <strong>Web app</strong> → Execute as: <strong>Me</strong> → Who has access: <strong>Anyone</strong> → Click <strong>Deploy</strong></p>
-            <p>→ Copy the <strong>Web app URL</strong> that appears (looks like: <code style="color:var(--foam);font-size:11px;">https://script.google.com/macros/s/XXXXX/exec</code>)</p>
-          </div>
-        </div>
-
-        <div class="step">
-          <div class="step-num">4</div>
-          <div class="step-content">
-            <h3>Paste the URL below & Save</h3>
-            <p>That's it — no tokens, no Base IDs, nothing else needed.</p>
-          </div>
-        </div>
-
-        <div class="config-section">
-          <div class="form-subtitle" style="margin-bottom:14px;">Your Google Apps Script URL</div>
-          <input type="text" id="cfg-url" placeholder="https://script.google.com/macros/s/.../exec" style="margin-bottom:12px;">
-          <br>
-          <button class="save-btn" onclick="saveConfig()">Save URL</button>
-          <div class="cfg-status" id="cfg-status"></div>
-          <p style="font-size:12px;color:var(--text-dim);margin-top:14px;">
-            ⚠ The URL is saved in your browser only. To share the site with others,
-            paste the URL inside this HTML file: find the line <code style="color:var(--foam);">SCRIPT_URL = ''</code> and paste it there.
-          </p>
-        </div>
-      </div>
-
-      <!-- TAB 2: Modify Fields -->
-      <div id="tab-fields" class="stab-content">
-        <p style="font-size:14px;color:var(--text-dim);margin-bottom:20px;line-height:1.7;">
-          Add, remove, or rename form fields here. Changes apply immediately.
-          <strong style="color:var(--gold);">Note:</strong> If you add a new field, also add a matching column header to your Google Sheet.
-        </p>
-        <div class="field-list" id="field-list"></div>
-        <button class="add-field-btn" onclick="addFieldRow()">+ Add New Field</button>
-        <br>
-        <button class="apply-fields-btn" onclick="applyFieldChanges()">✓ Apply Changes & Save</button>
-        <p style="font-size:12px;color:var(--text-dim);margin-top:12px;">Fields marked CORE cannot be deleted (MMD, Surveyors, Questions, Result).</p>
-      </div>
-
     </div>
   </div>
 
