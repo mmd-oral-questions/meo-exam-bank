@@ -330,15 +330,96 @@
   }
   .toast.show { transform:translateY(0); opacity:1; }
 
+  /* ── BOTTOM NAV (mobile only) ── */
+  .bottom-nav {
+    display: none; /* hidden on desktop */
+  }
+
   @media(max-width:640px) {
-    main, header { padding:16px; }
-    .form-grid, .cfg-row, .field-row { grid-template-columns:1fr; }
-    .form-card, .setup-card { padding:20px; }
-    .result-grid { grid-template-columns:1fr 1fr; }
+    /* General */
+    main { padding:14px; padding-bottom:90px; } /* extra bottom so content isn't behind bottom nav */
+    header { padding:0 14px; }
+    .header-inner { padding:10px 0; }
+    .logo-text h1 { font-size:13px; }
+    .logo-text p { font-size:9px; }
+    .logo-anchor { width:34px; height:34px; font-size:15px; }
+
+    /* Hide desktop nav */
     nav { display:none; }
-    .stats-row { gap:20px; }
+
+    /* Show bottom nav */
+    .bottom-nav {
+      display: flex;
+      position: fixed;
+      bottom: 0; left: 0; right: 0;
+      background: rgba(10,22,40,.97);
+      border-top: 1px solid var(--border);
+      backdrop-filter: blur(12px);
+      z-index: 200;
+      padding: 0;
+    }
+    .bnav-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 10px 4px 12px;
+      background: transparent;
+      border: none;
+      color: var(--text-dim);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all .2s;
+      border-top: 2px solid transparent;
+    }
+    .bnav-btn .bnav-icon { font-size: 20px; line-height:1; }
+    .bnav-btn:hover { color: var(--text); }
+    .bnav-btn.active {
+      color: var(--gold);
+      border-top-color: var(--gold);
+    }
+
+    /* Form & cards */
+    .form-grid { grid-template-columns:1fr; }
+    .form-card, .setup-card { padding:18px; }
+    .cfg-row, .field-row { grid-template-columns:1fr; }
+    .result-grid { grid-template-columns:1fr 1fr; }
+
+    /* Hero */
+    .hero { padding:30px 0 28px; }
+    .hero h2 { font-size:28px; }
+    .hero p { font-size:14px; }
+    .stats-row { gap:16px; margin-top:28px; padding-top:24px; }
+    .stat-num { font-size:28px; }
+    .hero-btns { flex-direction:column; gap:10px; }
+    .btn-primary, .btn-ghost { padding:13px 24px; font-size:11px; width:100%; }
+
+    /* Browse */
+    .browse-header { flex-direction:column; gap:10px; align-items:flex-start; }
+    .browse-header-left h2 { font-size:24px; }
+    .pdf-btn { width:100%; justify-content:center; }
     .filter-row { flex-direction:column; }
     .keyword-wrap { min-width:100%; }
+    .filter-input { width:100%; }
+    .clear-btn { width:100%; text-align:center; }
+
+    /* Entry cards */
+    .entry-card { padding:16px 18px; }
+    .q-text, .r-text { font-size:13px; }
+
+    /* Toast above bottom nav */
+    .toast { bottom:80px; right:14px; left:14px; text-align:center; }
+
+    /* Surveyor grid on mobile */
+    .surveyor-grid-mobile { grid-template-columns:1fr !important; }
+
+    /* Footer */
+    footer { margin-top:40px; padding:16px; font-size:10px; }
   }
 </style>
 </head>
@@ -362,7 +443,18 @@
   </div>
 </header>
 
-<main>
+<!-- ── BOTTOM NAV (mobile only) ── -->
+<nav class="bottom-nav" id="bottom-nav">
+  <button class="bnav-btn active" onclick="showView('home')" id="bnav-home">
+    <span class="bnav-icon">🏠</span>Home
+  </button>
+  <button class="bnav-btn" onclick="showView('submit')" id="bnav-submit">
+    <span class="bnav-icon">📋</span>Submit
+  </button>
+  <button class="bnav-btn" onclick="showView('browse')" id="bnav-browse">
+    <span class="bnav-icon">🔍</span>Browse
+  </button>
+</nav>
 
   <!-- ══ HOME ══ -->
   <div id="view-home" class="view active">
