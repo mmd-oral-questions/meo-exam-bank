@@ -4,229 +4,192 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MEO Class-I Oral Exam Question Bank</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 :root {
-  --navy:#0a1628; --deep:#0d1f3c; --ocean:#1a3a5c;
-  --steel:#2d5a8e; --horizon:#4a90c4; --foam:#a8d4f0;
-  --white:#f0f4f8; --gold:#c9a84c; --gold-light:#e8c96a;
-  --pass:#2ecc71; --fail:#e74c3c; --pending:#f39c12;
-  --text:#d0dce8; --text-dim:#7a95b0;
-  --border:rgba(74,144,196,0.2); --card:rgba(13,31,60,0.85);
+  --blue:#1a56db; --blue-dark:#1342b0; --blue-light:#ebf2ff;
+  --blue-mid:#dbeafe; --teal:#0891b2;
+  --pass:#16a34a; --fail:#dc2626; --pending:#d97706;
+  --pass-bg:#f0fdf4; --fail-bg:#fef2f2; --pend-bg:#fffbeb;
+  --pass-border:#86efac; --fail-border:#fca5a5; --pend-border:#fcd34d;
+  --text:#111827; --text-mid:#374151; --text-dim:#6b7280;
+  --border:#e5e7eb; --border-mid:#d1d5db;
+  --bg:#f9fafb; --white:#ffffff; --card:#ffffff;
+  --header-bg:#ffffff; --shadow:0 1px 3px rgba(0,0,0,.08),0 1px 2px rgba(0,0,0,.06);
+  --shadow-md:0 4px 6px rgba(0,0,0,.07),0 2px 4px rgba(0,0,0,.06);
 }
 *{margin:0;padding:0;box-sizing:border-box;}
-body{font-family:'IBM Plex Sans',sans-serif;background:var(--navy);color:var(--text);min-height:100vh;overflow-x:hidden;}
-body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:radial-gradient(ellipse at 20% 50%,rgba(26,58,92,.6) 0%,transparent 60%),
-             radial-gradient(ellipse at 80% 20%,rgba(45,90,142,.3) 0%,transparent 50%),
-             radial-gradient(ellipse at 60% 80%,rgba(10,22,40,.8) 0%,transparent 50%);}
-body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
-  background-image:linear-gradient(rgba(74,144,196,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(74,144,196,.04) 1px,transparent 1px);
-  background-size:60px 60px;}
-.app{position:relative;z-index:1;}
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+.app{min-height:100vh;display:flex;flex-direction:column;}
 
 /* HEADER */
-header{border-bottom:1px solid var(--border);padding:0 40px;background:rgba(10,22,40,.92);backdrop-filter:blur(12px);position:sticky;top:0;z-index:100;}
-.header-inner{max-width:1200px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 0;}
-.logo{display:flex;align-items:center;gap:14px;}
-.logo-anchor{width:40px;height:40px;border:2px solid var(--gold);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;}
-.logo-text h1{font-family:'Playfair Display',serif;font-size:17px;color:var(--white);}
-.logo-text p{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--gold);letter-spacing:2px;}
-nav{display:flex;gap:4px;}
-.nav-btn{padding:8px 18px;background:transparent;border:1px solid transparent;border-radius:4px;color:var(--text-dim);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;cursor:pointer;transition:all .2s;text-transform:uppercase;}
-.nav-btn:hover{color:var(--text);border-color:var(--border);}
-.nav-btn.active{background:var(--steel);border-color:var(--horizon);color:var(--white);}
-
-/* BOTTOM NAV hidden on desktop */
+header{background:var(--header-bg);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:100;box-shadow:var(--shadow);}
+.header-inner{max-width:1100px;margin:0 auto;padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:60px;}
+.logo{display:flex;align-items:center;gap:10px;}
+.logo-icon{width:36px;height:36px;background:var(--blue);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;color:white;}
+.logo-text h1{font-size:15px;font-weight:700;color:var(--text);letter-spacing:-.2px;}
+.logo-text p{font-size:11px;color:var(--text-dim);margin-top:1px;}
+nav{display:flex;gap:2px;}
+.nav-btn{padding:7px 14px;background:transparent;border:none;border-radius:6px;color:var(--text-dim);font-family:'Inter',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .15s;}
+.nav-btn:hover{background:var(--bg);color:var(--text);}
+.nav-btn.active{background:var(--blue-light);color:var(--blue);font-weight:600;}
 .bottom-nav{display:none;}
 
 /* MAIN */
-main{max-width:1200px;margin:0 auto;padding:40px;}
-.view{display:none;animation:fadeUp .4s ease;}
+main{max-width:1100px;margin:0 auto;padding:32px 24px;flex:1;width:100%;}
+.view{display:none;animation:fadeUp .25s ease;}
 .view.active{display:block;}
-@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
 
 /* HERO */
-.hero{text-align:center;padding:60px 0 48px;}
-.hero-badge{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:3px;color:var(--gold);border:1px solid rgba(201,168,76,.3);padding:6px 16px;border-radius:20px;margin-bottom:24px;text-transform:uppercase;}
-.hero h2{font-family:'Playfair Display',serif;font-size:clamp(32px,6vw,60px);font-weight:900;color:var(--white);line-height:1.1;margin-bottom:16px;}
-.hero h2 span{color:var(--gold);}
-.hero p{font-size:15px;color:var(--text-dim);max-width:540px;margin:0 auto 36px;line-height:1.7;}
-.hero-btns{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;}
-.btn-primary{padding:14px 32px;background:linear-gradient(135deg,var(--steel),var(--ocean));border:1px solid var(--horizon);border-radius:6px;color:var(--white);font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:opacity .2s;}
-.btn-primary:hover{opacity:.85;}
-.btn-ghost{padding:14px 32px;background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .2s;}
-.btn-ghost:hover{border-color:var(--horizon);}
-.stats-row{display:flex;justify-content:center;gap:48px;margin-top:48px;padding-top:40px;border-top:1px solid var(--border);flex-wrap:wrap;}
-.stat{text-align:center;}
-.stat-num{font-family:'Playfair Display',serif;font-size:36px;font-weight:700;color:var(--gold);display:block;}
-.stat-label{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--text-dim);letter-spacing:1.5px;text-transform:uppercase;margin-top:4px;}
+.hero{padding:48px 24px;text-align:center;background:var(--white);border:1px solid var(--border);border-radius:12px;margin-bottom:32px;box-shadow:var(--shadow);}
+.hero-tag{display:inline-flex;align-items:center;gap:6px;background:var(--blue-light);color:var(--blue);font-size:12px;font-weight:600;padding:4px 12px;border-radius:20px;margin-bottom:20px;letter-spacing:.3px;}
+.hero h2{font-family:'Merriweather',serif;font-size:clamp(24px,4vw,40px);font-weight:700;color:var(--text);line-height:1.2;margin-bottom:12px;}
+.hero h2 span{color:var(--blue);}
+.hero p{font-size:15px;color:var(--text-dim);max-width:500px;margin:0 auto 28px;line-height:1.7;}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.btn-primary{padding:11px 24px;background:var(--blue);border:none;border-radius:7px;color:white;font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:background .15s;display:inline-flex;align-items:center;gap:7px;}
+.btn-primary:hover{background:var(--blue-dark);}
+.btn-secondary{padding:11px 24px;background:var(--white);border:1px solid var(--border-mid);border-radius:7px;color:var(--text-mid);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:7px;}
+.btn-secondary:hover{border-color:var(--blue);color:var(--blue);}
+.stats-row{display:flex;justify-content:center;gap:40px;margin-top:32px;padding-top:28px;border-top:1px solid var(--border);flex-wrap:wrap;}
+.stat-num{font-size:30px;font-weight:700;color:var(--blue);display:block;font-family:'Merriweather',serif;}
+.stat-label{font-size:11px;color:var(--text-dim);margin-top:3px;font-weight:500;text-transform:uppercase;letter-spacing:.5px;}
 
 /* FORM */
-.form-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:48px;backdrop-filter:blur(8px);max-width:820px;margin:0 auto;}
-.form-title{font-family:'Playfair Display',serif;font-size:26px;color:var(--white);margin-bottom:6px;}
-.form-subtitle{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:36px;}
-.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-bottom:22px;}
-.form-group{display:flex;flex-direction:column;gap:8px;}
+.page-header{margin-bottom:24px;}
+.page-header h2{font-family:'Merriweather',serif;font-size:24px;font-weight:700;color:var(--text);margin-bottom:4px;}
+.page-header p{font-size:14px;color:var(--text-dim);}
+.form-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:32px;box-shadow:var(--shadow);max-width:780px;}
+.form-section{margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid var(--border);}
+.form-section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
+.section-label{font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px;}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.form-group{display:flex;flex-direction:column;gap:5px;}
 .form-group.full{grid-column:1/-1;}
-label{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:2px;color:var(--gold);text-transform:uppercase;}
+label{font-size:13px;font-weight:600;color:var(--text-mid);}
 label .req{color:var(--fail);margin-left:2px;}
-label .opt{color:var(--text-dim);font-size:10px;margin-left:4px;text-transform:none;letter-spacing:0;}
-input,select,textarea{background:rgba(10,22,40,.8);border:1px solid var(--border);border-radius:6px;padding:11px 15px;color:var(--white);font-family:'IBM Plex Sans',sans-serif;font-size:14px;outline:none;transition:border-color .2s,box-shadow .2s;width:100%;}
-input:focus,select:focus,textarea:focus{border-color:var(--horizon);box-shadow:0 0 0 3px rgba(74,144,196,.15);}
-select option{background:var(--deep);}
+label .opt{font-weight:400;color:var(--text-dim);font-size:12px;margin-left:4px;}
+input,select,textarea{background:var(--white);border:1px solid var(--border-mid);border-radius:7px;padding:10px 13px;color:var(--text);font-family:'Inter',sans-serif;font-size:14px;outline:none;transition:border-color .15s,box-shadow .15s;width:100%;}
+input:focus,select:focus,textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(26,86,219,.12);}
+select option{background:white;}
 textarea{resize:vertical;min-height:130px;line-height:1.6;}
+.surveyor-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .surveyor-wrap{position:relative;}
-.surveyor-wrap input{padding-right:80px;}
-.surveyor-tag{position:absolute;top:50%;right:10px;transform:translateY(-50%);font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:1px;padding:2px 8px;border-radius:10px;pointer-events:none;}
-.tag-int{background:rgba(201,168,76,.18);color:var(--gold);}
-.tag-ext{background:rgba(74,144,196,.18);color:var(--horizon);}
+.surveyor-wrap input{padding-right:90px;}
+.surveyor-tag{position:absolute;top:50%;right:10px;transform:translateY(-50%);font-size:10px;font-weight:700;letter-spacing:.8px;padding:2px 8px;border-radius:4px;pointer-events:none;}
+.tag-int{background:#fef3c7;color:#92400e;}
+.tag-ext{background:#dbeafe;color:#1e40af;}
 .result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
 .result-radio{display:none;}
-.result-lbl{display:flex;align-items:center;justify-content:center;gap:6px;padding:11px;border:1px solid var(--border);border-radius:6px;cursor:pointer;font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;transition:all .2s;color:var(--text-dim);}
-.result-lbl:hover{border-color:var(--horizon);color:var(--text);}
-.result-radio:checked + .lbl-pass{background:rgba(46,204,113,.15);border-color:var(--pass);color:var(--pass);}
-.result-radio:checked + .lbl-fail{background:rgba(231,76,60,.15);border-color:var(--fail);color:var(--fail);}
-.result-radio:checked + .lbl-pend{background:rgba(243,156,18,.15);border-color:var(--pending);color:var(--pending);}
-.submit-btn{width:100%;padding:15px;background:linear-gradient(135deg,var(--steel),var(--ocean));border:1px solid var(--horizon);border-radius:6px;color:var(--white);font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:opacity .2s;margin-top:28px;}
-.submit-btn:hover{opacity:.85;}
-.submit-btn:disabled{opacity:.4;cursor:not-allowed;}
-.success-msg{display:none;text-align:center;padding:32px;background:rgba(46,204,113,.08);border:1px solid rgba(46,204,113,.25);border-radius:8px;margin-top:20px;}
+.result-lbl{display:flex;align-items:center;justify-content:center;gap:7px;padding:12px;border:2px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;transition:all .15s;color:var(--text-dim);background:var(--white);}
+.result-lbl:hover{border-color:var(--border-mid);color:var(--text);}
+.result-radio:checked + .lbl-pass{border-color:var(--pass);background:var(--pass-bg);color:var(--pass);}
+.result-radio:checked + .lbl-fail{border-color:var(--fail);background:var(--fail-bg);color:var(--fail);}
+.result-radio:checked + .lbl-pend{border-color:var(--pending);background:var(--pend-bg);color:var(--pending);}
+.btn-submit{padding:13px 28px;background:var(--blue);border:none;border-radius:7px;color:white;font-family:'Inter',sans-serif;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s;width:100%;margin-top:8px;}
+.btn-submit:hover{background:var(--blue-dark);}
+.btn-submit:disabled{opacity:.45;cursor:not-allowed;}
+.success-msg{display:none;text-align:center;padding:32px;background:var(--pass-bg);border:1px solid var(--pass-border);border-radius:10px;margin-top:20px;}
 .success-msg.show{display:block;}
-.success-msg h3{font-family:'Playfair Display',serif;font-size:22px;color:var(--pass);margin-bottom:8px;}
-.success-msg p{color:var(--text-dim);font-size:14px;}
+.success-msg h3{font-size:20px;font-weight:700;color:var(--pass);margin-bottom:6px;}
+.success-msg p{font-size:14px;color:#166534;}
 
 /* BROWSE */
-.browse-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:14px;}
-.browse-header-left h2{font-family:'Playfair Display',serif;font-size:30px;color:var(--white);margin-bottom:6px;}
-.result-count{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-dim);letter-spacing:1px;}
-.result-count span{color:var(--gold);}
-.filter-bar{display:flex;flex-direction:column;gap:10px;margin-bottom:24px;}
-.filter-row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;}
+.browse-topbar{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:12px;}
+.browse-topbar h2{font-family:'Merriweather',serif;font-size:24px;font-weight:700;color:var(--text);}
+.result-count{font-size:13px;color:var(--text-dim);margin-top:4px;}
+.result-count span{color:var(--blue);font-weight:600;}
+.filter-bar{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:14px 16px;margin-bottom:20px;display:flex;flex-direction:column;gap:10px;box-shadow:var(--shadow);}
+.filter-row{display:flex;gap:10px;align-items:center;flex-wrap:wrap;}
 .keyword-wrap{position:relative;flex:1;min-width:200px;}
-.keyword-wrap input{width:100%;padding:10px 16px 10px 40px;background:var(--card);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-size:13px;outline:none;transition:border-color .2s;}
-.keyword-wrap input:focus{border-color:var(--horizon);}
-.search-icon{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:14px;pointer-events:none;opacity:.5;}
-.keyword-highlight{background:rgba(201,168,76,.4);border-radius:2px;padding:0 2px;color:var(--white);}
-.filter-input{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:9px 14px;color:var(--text);font-family:'IBM Plex Sans',sans-serif;font-size:13px;outline:none;}
-.filter-input:focus{border-color:var(--horizon);}
-.clear-btn{padding:9px 14px;background:transparent;border:1px solid var(--border);border-radius:6px;color:var(--text-dim);font-family:'IBM Plex Mono',monospace;font-size:11px;cursor:pointer;transition:all .2s;white-space:nowrap;}
-.clear-btn:hover{border-color:var(--horizon);color:var(--text);}
-.pdf-btn{padding:10px 20px;background:linear-gradient(135deg,#7b0000,#c0392b);border:1px solid #e74c3c;border-radius:6px;color:var(--white);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:opacity .2s;white-space:nowrap;}
-.pdf-btn:hover{opacity:.85;}
-.pdf-btn:disabled{opacity:.4;cursor:not-allowed;}
-.entries-list{display:flex;flex-direction:column;gap:18px;}
-.entry-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:26px 30px;backdrop-filter:blur(8px);transition:border-color .2s,transform .2s;animation:fadeUp .3s ease;}
-.entry-card:hover{border-color:rgba(74,144,196,.4);transform:translateY(-2px);}
-.entry-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:12px;}
-.entry-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-dim);}
-.mmd-badge{padding:3px 10px;border-radius:10px;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.25);color:var(--gold-light);}
-.result-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;padding:4px 12px;border-radius:12px;text-transform:uppercase;}
-.b-pass{background:rgba(46,204,113,.15);color:var(--pass);border:1px solid rgba(46,204,113,.3);}
-.b-fail{background:rgba(231,76,60,.15);color:var(--fail);border:1px solid rgba(231,76,60,.3);}
-.b-pend{background:rgba(243,156,18,.15);color:var(--pending);border:1px solid rgba(243,156,18,.3);}
+.keyword-wrap input{padding-left:36px;background:var(--bg);}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:15px;pointer-events:none;opacity:.5;}
+.keyword-highlight{background:#fef08a;border-radius:2px;padding:0 1px;color:#713f12;}
+.filter-select{background:var(--bg);border:1px solid var(--border-mid);border-radius:7px;padding:9px 12px;color:var(--text-mid);font-family:'Inter',sans-serif;font-size:13px;outline:none;cursor:pointer;}
+.filter-select:focus{border-color:var(--blue);}
+.filter-text{background:var(--bg);border:1px solid var(--border-mid);border-radius:7px;padding:9px 12px;color:var(--text-mid);font-family:'Inter',sans-serif;font-size:13px;outline:none;flex:1;min-width:140px;}
+.filter-text:focus{border-color:var(--blue);}
+.btn-clear{padding:9px 14px;background:transparent;border:1px solid var(--border-mid);border-radius:7px;color:var(--text-dim);font-family:'Inter',sans-serif;font-size:12px;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap;}
+.btn-clear:hover{border-color:var(--blue);color:var(--blue);}
+.btn-pdf{padding:9px 16px;background:var(--white);border:1px solid var(--border-mid);border-radius:7px;color:var(--text-mid);font-family:'Inter',sans-serif;font-size:13px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;display:flex;align-items:center;gap:6px;box-shadow:var(--shadow);}
+.btn-pdf:hover{border-color:var(--fail);color:var(--fail);}
+.btn-pdf:disabled{opacity:.4;cursor:not-allowed;}
+.entries-list{display:flex;flex-direction:column;gap:14px;}
+.entry-card{background:var(--white);border:1px solid var(--border);border-radius:10px;padding:20px 24px;box-shadow:var(--shadow);transition:box-shadow .15s,border-color .15s;}
+.entry-card:hover{box-shadow:var(--shadow-md);border-color:var(--border-mid);}
+.entry-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:8px;}
+.entry-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.mmd-badge{font-size:12px;font-weight:600;padding:3px 10px;border-radius:5px;background:var(--blue-light);color:var(--blue);}
+.entry-date{font-size:12px;color:var(--text-dim);}
+.entry-ship{font-size:12px;color:var(--text-dim);}
+.result-badge{font-size:11px;font-weight:700;padding:3px 10px;border-radius:5px;letter-spacing:.5px;}
+.b-pass{background:var(--pass-bg);color:var(--pass);border:1px solid var(--pass-border);}
+.b-fail{background:var(--fail-bg);color:var(--fail);border:1px solid var(--fail-border);}
+.b-pend{background:var(--pend-bg);color:var(--pending);border:1px solid var(--pend-border);}
 .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;}
-.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 11px;border-radius:20px;font-family:'IBM Plex Mono',monospace;font-size:11px;}
-.chip-int{background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.22);color:var(--gold-light);}
-.chip-ext{background:rgba(74,144,196,.1);border:1px solid rgba(74,144,196,.22);color:var(--foam);}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:5px;font-size:12px;font-weight:500;}
+.chip-int{background:#fef9c3;color:#854d0e;border:1px solid #fde68a;}
+.chip-ext{background:var(--blue-mid);color:#1e40af;border:1px solid #bfdbfe;}
 .chip-dot{width:5px;height:5px;border-radius:50%;background:currentColor;}
-.q-label{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:2px;color:var(--text-dim);text-transform:uppercase;margin-bottom:8px;}
-.q-text{font-size:14px;color:var(--text);line-height:1.8;white-space:pre-wrap;border-left:2px solid var(--steel);padding-left:14px;}
-.r-text{font-size:14px;color:var(--text-dim);line-height:1.7;white-space:pre-wrap;border-left:2px solid var(--gold);padding-left:14px;}
-.empty-state{text-align:center;padding:80px 40px;color:var(--text-dim);}
-.empty-state h3{font-family:'Playfair Display',serif;font-size:22px;color:var(--text);margin-bottom:8px;margin-top:16px;}
-.loading{display:flex;align-items:center;justify-content:center;gap:12px;padding:50px;color:var(--text-dim);font-family:'IBM Plex Mono',monospace;font-size:13px;}
-.spinner{width:20px;height:20px;border:2px solid var(--border);border-top-color:var(--horizon);border-radius:50%;animation:spin .8s linear infinite;}
+.q-label{font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.6px;margin-bottom:7px;}
+.q-text{font-size:14px;color:var(--text-mid);line-height:1.8;white-space:pre-wrap;border-left:3px solid var(--blue);padding-left:12px;}
+.r-text{font-size:14px;color:var(--text-dim);line-height:1.7;white-space:pre-wrap;border-left:3px solid #f59e0b;padding-left:12px;}
+.empty-state{text-align:center;padding:64px 24px;color:var(--text-dim);}
+.empty-state h3{font-size:18px;font-weight:600;color:var(--text-mid);margin-top:12px;margin-bottom:6px;}
+.loading{display:flex;align-items:center;justify-content:center;gap:10px;padding:48px;color:var(--text-dim);font-size:14px;}
+.spinner{width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
-footer{border-top:1px solid var(--border);padding:22px 40px;text-align:center;font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--text-dim);letter-spacing:1px;margin-top:80px;}
-footer span{color:var(--gold);}
-.toast{position:fixed;bottom:28px;right:28px;background:var(--deep);border:1px solid var(--horizon);border-radius:8px;padding:13px 20px;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--white);z-index:999;transform:translateY(80px);opacity:0;transition:all .3s;}
+
+footer{border-top:1px solid var(--border);padding:18px 24px;text-align:center;font-size:12px;color:var(--text-dim);background:var(--white);margin-top:auto;}
+footer span{color:var(--blue);font-weight:500;}
+.toast{position:fixed;bottom:24px;right:24px;background:var(--text);border-radius:8px;padding:12px 18px;font-size:13px;color:white;z-index:999;transform:translateY(70px);opacity:0;transition:all .3s;box-shadow:var(--shadow-md);}
 .toast.show{transform:translateY(0);opacity:1;}
 
-/* SETUP */
-.setup-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:48px;max-width:820px;margin:0 auto;}
-.setup-card h2{font-family:'Playfair Display',serif;font-size:26px;color:var(--white);margin-bottom:6px;}
-.setup-subtitle{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gold);letter-spacing:2px;text-transform:uppercase;margin-bottom:32px;}
-.setup-tabs{display:flex;gap:4px;margin-bottom:32px;border-bottom:1px solid var(--border);}
-.stab{padding:10px 20px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--text-dim);font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:1px;cursor:pointer;transition:all .2s;margin-bottom:-1px;}
-.stab:hover{color:var(--text);}
-.stab.active{border-bottom-color:var(--gold);color:var(--gold);}
-.stab-content{display:none;}
-.stab-content.active{display:block;animation:fadeUp .3s ease;}
-.step{display:flex;gap:18px;margin-bottom:28px;padding-bottom:28px;border-bottom:1px solid var(--border);}
-.step:last-of-type{border-bottom:none;margin-bottom:0;padding-bottom:0;}
-.step-num{width:34px;height:34px;border-radius:50%;background:var(--steel);border:1px solid var(--horizon);display:flex;align-items:center;justify-content:center;font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--white);flex-shrink:0;}
-.step-content h3{font-size:15px;font-weight:600;color:var(--white);margin-bottom:7px;}
-.step-content p{font-size:13px;color:var(--text-dim);line-height:1.7;margin-bottom:6px;}
-.step-content a{color:var(--horizon);text-decoration:none;}
-.step-content a:hover{text-decoration:underline;}
-.code-block{background:rgba(10,22,40,.9);border:1px solid var(--border);border-radius:6px;padding:12px 16px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--foam);margin-top:10px;overflow-x:auto;line-height:1.8;white-space:pre;}
-.config-section{margin-top:32px;padding-top:28px;border-top:1px solid var(--border);}
-.cfg-row{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;}
-.save-btn{padding:11px 28px;background:linear-gradient(135deg,var(--gold),#a07830);border:none;border-radius:6px;color:var(--navy);font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;font-weight:600;transition:opacity .2s;}
-.save-btn:hover{opacity:.85;}
-.cfg-status{font-family:'IBM Plex Mono',monospace;font-size:11px;margin-top:10px;padding:8px 14px;border-radius:4px;display:none;}
-.cfg-ok{display:block;background:rgba(46,204,113,.1);color:var(--pass);border:1px solid rgba(46,204,113,.2);}
-.cfg-err{display:block;background:rgba(231,76,60,.1);color:var(--fail);border:1px solid rgba(231,76,60,.2);}
-.field-list{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
-.field-row{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:center;background:rgba(10,22,40,.6);border:1px solid var(--border);border-radius:6px;padding:10px 14px;}
-.field-row input,.field-row select{padding:7px 10px;font-size:13px;}
-.del-btn{background:rgba(231,76,60,.15);border:1px solid rgba(231,76,60,.3);color:var(--fail);border-radius:4px;padding:6px 12px;cursor:pointer;font-size:14px;transition:all .2s;}
-.del-btn:hover{background:rgba(231,76,60,.3);}
-.add-field-btn{padding:9px 20px;background:transparent;border:1px dashed var(--border);border-radius:6px;color:var(--text-dim);font-family:'IBM Plex Mono',monospace;font-size:12px;cursor:pointer;transition:all .2s;width:100%;}
-.add-field-btn:hover{border-color:var(--horizon);color:var(--text);}
-.apply-fields-btn{padding:11px 24px;background:linear-gradient(135deg,var(--steel),var(--ocean));border:1px solid var(--horizon);border-radius:6px;color:var(--white);font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:1px;text-transform:uppercase;cursor:pointer;margin-top:14px;transition:opacity .2s;}
-.apply-fields-btn:hover{opacity:.85;}
-
-/* ═══ MOBILE ═══ */
+/* MOBILE */
 @media(max-width:640px){
   nav{display:none;}
   .bottom-nav{
-    display:flex;
-    position:fixed;bottom:0;left:0;right:0;
-    background:rgba(10,22,40,.97);
-    border-top:1px solid var(--border);
-    backdrop-filter:blur(12px);
-    z-index:200;
+    display:flex;position:fixed;bottom:0;left:0;right:0;
+    background:var(--white);border-top:1px solid var(--border);
+    z-index:200;box-shadow:0 -2px 8px rgba(0,0,0,.06);
   }
   .bnav-btn{
     flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;
     padding:8px 4px 10px;background:transparent;border:none;
-    border-top:3px solid transparent;
-    color:var(--text-dim);font-family:'IBM Plex Mono',monospace;font-size:9px;
-    letter-spacing:.5px;text-transform:uppercase;cursor:pointer;
-    transition:color .2s,border-color .2s;
+    border-top:2px solid transparent;
+    color:var(--text-dim);font-family:'Inter',sans-serif;font-size:9px;font-weight:600;
+    letter-spacing:.3px;text-transform:uppercase;cursor:pointer;transition:all .15s;
   }
-  .bnav-icon{font-size:22px;line-height:1;display:block;}
-  .bnav-btn.active{color:var(--gold);border-top-color:var(--gold);}
-  header{padding:0 14px;}
-  .header-inner{padding:10px 0;}
+  .bnav-icon{font-size:20px;line-height:1;display:block;}
+  .bnav-btn.active{color:var(--blue);border-top-color:var(--blue);}
+  header{padding:0;}
+  .header-inner{padding:0 14px;height:52px;}
   .logo-text h1{font-size:13px;}
-  .logo-text p{font-size:9px;}
-  .logo-anchor{width:32px;height:32px;font-size:14px;}
-  main{padding:16px;padding-bottom:90px;}
-  footer{margin-top:40px;padding:16px;font-size:10px;}
-  .hero{padding:28px 0 24px;}
-  .hero h2{font-size:26px;}
+  .logo-text p{display:none;}
+  .logo-icon{width:30px;height:30px;font-size:15px;}
+  main{padding:14px;padding-bottom:80px;}
+  .hero{padding:28px 16px;}
+  .hero h2{font-size:22px;}
   .hero p{font-size:13px;}
-  .hero-btns{flex-direction:column;gap:10px;}
-  .btn-primary,.btn-ghost{width:100%;padding:13px;font-size:11px;}
-  .stats-row{gap:16px;margin-top:24px;padding-top:20px;}
-  .stat-num{font-size:26px;}
+  .hero-btns{flex-direction:column;}
+  .btn-primary,.btn-secondary{width:100%;justify-content:center;}
+  .stats-row{gap:20px;margin-top:20px;padding-top:18px;}
+  .stat-num{font-size:24px;}
   .form-card{padding:18px;}
   .form-grid{grid-template-columns:1fr;}
-  .surveyor-inner{grid-template-columns:1fr!important;}
-  .browse-header{flex-direction:column;align-items:flex-start;}
-  .browse-header-left h2{font-size:22px;}
-  .pdf-btn{width:100%;text-align:center;}
+  .surveyor-row{grid-template-columns:1fr;}
+  .result-grid{grid-template-columns:1fr 1fr;}
+  .browse-topbar{flex-direction:column;}
+  .btn-pdf{width:100%;justify-content:center;}
   .filter-row{flex-direction:column;}
   .keyword-wrap{min-width:100%;}
-  .filter-input{width:100%;}
-  .clear-btn{width:100%;text-align:center;}
+  .filter-select,.filter-text,.btn-clear{width:100%;}
   .entry-card{padding:14px 16px;}
   .q-text,.r-text{font-size:13px;}
-  .toast{bottom:76px;right:14px;left:14px;text-align:center;}
+  .toast{bottom:74px;right:12px;left:12px;text-align:center;}
+  footer{padding-bottom:80px;}
 }
 </style>
 </head>
@@ -236,15 +199,15 @@ footer span{color:var(--gold);}
 <header>
   <div class="header-inner">
     <div class="logo">
-      <div class="logo-anchor">⚓</div>
+      <div class="logo-icon">⚓</div>
       <div class="logo-text">
-        <h1>MEO Class-I Oral Exam Question Bank</h1>
-        <p>MMD India · Class-I Orals</p>
+        <h1>MEO Class-I Question Bank</h1>
+        <p>MMD India · Oral Exam Questions</p>
       </div>
     </div>
     <nav>
       <button class="nav-btn active" onclick="showView('home')">Home</button>
-      <button class="nav-btn" onclick="showView('submit')">Submit Report</button>
+      <button class="nav-btn" onclick="showView('submit')">Submit Questions</button>
       <button class="nav-btn" onclick="showView('browse')">Browse Questions</button>
     </nav>
   </div>
@@ -264,17 +227,18 @@ footer span{color:var(--gold);}
 
 <main>
 
+  <!-- HOME -->
   <div id="view-home" class="view active">
     <div class="hero">
-      <div class="hero-badge">⚓ Community Knowledge Base</div>
-      <h2>Share Your <span>Oral Exam</span><br>Experience</h2>
-      <p>Every candidate who submits their questions makes it easier for the next one. Build the collective knowledge of MEO candidates across India.</p>
+      <div class="hero-tag">⚓ Community Knowledge Base</div>
+      <h2>Share Your <span>Oral Exam</span> Questions</h2>
+      <p>Every candidate who shares their questions makes it easier for the next one. Help build the collective knowledge of MEO candidates across India.</p>
       <div class="hero-btns">
-        <button class="btn-primary" onclick="showView('submit')">📋 Submit My Report</button>
-        <button class="btn-ghost" onclick="showView('browse')">🔍 Browse Questions</button>
+        <button class="btn-primary" onclick="showView('submit')">📋 Submit Questions</button>
+        <button class="btn-secondary" onclick="showView('browse')">🔍 Browse Questions</button>
       </div>
       <div class="stats-row">
-        <div class="stat"><span class="stat-num" id="stat-total">—</span><span class="stat-label">Reports Submitted</span></div>
+        <div class="stat"><span class="stat-num" id="stat-total">—</span><span class="stat-label">Entries Submitted</span></div>
         <div class="stat"><span class="stat-num" id="stat-surv">—</span><span class="stat-label">Surveyors Tracked</span></div>
         <div class="stat"><span class="stat-num" id="stat-pass">—</span><span class="stat-label">Pass Rate</span></div>
         <div class="stat"><span class="stat-num" id="stat-mmd">4</span><span class="stat-label">MMDs Covered</span></div>
@@ -282,54 +246,57 @@ footer span{color:var(--gold);}
     </div>
   </div>
 
+  <!-- SUBMIT -->
   <div id="view-submit" class="view">
+    <div class="page-header">
+      <h2>Submit Questions</h2>
+      <p>Share the questions you were asked. Every detail helps future candidates.</p>
+    </div>
     <div class="form-card">
-      <div class="form-title">Submit Exam Report</div>
-      <div class="form-subtitle">Your contribution helps future candidates</div>
       <div id="dynamic-form"></div>
-      <button class="submit-btn" id="submit-btn" onclick="submitForm()">⚓ Submit Report</button>
+      <button class="btn-submit" id="submit-btn" onclick="submitForm()">⚓ Submit Questions</button>
       <div class="success-msg" id="success-msg">
-        <div style="font-size:48px">✅</div>
-        <h3>Report Submitted!</h3>
-        <p>Thank you. Your report is now live and visible to all candidates.</p>
-        <button class="btn-ghost" style="margin-top:16px;" onclick="resetForm()">Submit Another</button>
+        <div style="font-size:40px;margin-bottom:10px">✅</div>
+        <h3>Questions Submitted!</h3>
+        <p>Thank you. Your questions are now visible to all candidates.</p>
+        <button class="btn-secondary" style="margin-top:16px;display:inline-flex;" onclick="resetForm()">Submit Another</button>
       </div>
     </div>
   </div>
 
+  <!-- BROWSE -->
   <div id="view-browse" class="view">
-    <div class="browse-header">
-      <div class="browse-header-left">
+    <div class="browse-topbar">
+      <div>
         <h2>Question Archive</h2>
         <div class="result-count" id="result-count"></div>
       </div>
-      <button class="pdf-btn" id="pdf-btn" onclick="exportPDF()">📄 Save as PDF</button>
+      <button class="btn-pdf" id="pdf-btn" onclick="exportPDF()">📄 Save as PDF</button>
     </div>
     <div class="filter-bar">
       <div class="filter-row">
         <div class="keyword-wrap">
           <span class="search-icon">🔍</span>
-          <input type="text" id="fil-keyword" placeholder="Search — MARPOL, ISM, boiler, EEBD, stability..." oninput="filterEntries()">
+          <input type="text" id="fil-keyword" placeholder="Search by keyword — MARPOL, ISM, boiler, EEBD, stability..." oninput="filterEntries()">
         </div>
-        <button class="clear-btn" onclick="clearFilters()">✕ Clear</button>
+        <button class="btn-clear" onclick="clearFilters()">✕ Clear</button>
       </div>
       <div class="filter-row">
-        <input class="filter-input" type="text" id="fil-surv" placeholder="👤 Surveyor name..." oninput="filterEntries()" style="flex:1;min-width:150px;">
-        <select class="filter-input" id="fil-mmd" onchange="filterEntries()">
+        <input class="filter-text" type="text" id="fil-surv" placeholder="👤 Filter by surveyor name..." oninput="filterEntries()">
+        <select class="filter-select" id="fil-mmd" onchange="filterEntries()">
           <option value="">All MMDs</option>
           <option>Mumbai</option><option>Kolkata</option><option>Chennai</option><option>Kochi</option>
         </select>
-        <select class="filter-input" id="fil-result" onchange="filterEntries()">
+        <select class="filter-select" id="fil-result" onchange="filterEntries()">
           <option value="">All Results</option>
           <option>Pass</option><option>Fail</option><option>Pending</option>
         </select>
       </div>
     </div>
     <div id="entries-list" class="entries-list">
-      <div class="loading"><div class="spinner"></div>Loading...</div>
+      <div class="loading"><div class="spinner"></div>Loading questions...</div>
     </div>
   </div>
-
 
 </main>
 
@@ -343,14 +310,14 @@ footer span{color:var(--gold);}
 let SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxf7kn5KddHvMHOhP749Ss8tFB3eYvyw27V6ak_4lmNn8cvIyasmAYXlntiTGsy1sAQ/exec';
 
 const DEFAULT_FIELDS = [
-  { id:'Name',      label:'Your Name',            type:'text',     required:false, placeholder:'Anonymous if left blank' },
-  { id:'MMD',       label:'MMD',                  type:'select',   required:true,  core:true, options:['Mumbai','Kolkata','Chennai','Kochi'] },
-  { id:'Date',      label:'Exam Date',            type:'date',     required:true,  core:true },
-  { id:'Surveyors', label:'Surveyors',            type:'surveyor', required:true,  core:true, full:true },
-  { id:'ShipType',  label:'Ship Type',            type:'select',   required:false, options:['Bulk Carrier','Oil Tanker','LNG Tanker','LPG Carrier','Chemical Tanker','Container Ship','General Cargo','RORO','Passenger Ship','Other'] },
-  { id:'Questions', label:'Questions Asked',      type:'textarea', required:true,  core:true, full:true, placeholder:'List all questions you remember — one per line. Even partial recall helps!' },
-  { id:'Remarks',   label:'Surveyor Style / Advice', type:'textarea', required:false, full:true, placeholder:"How was the surveyor's approach? What topics did they focus on? Any advice?" },
-  { id:'Result',    label:'Result',               type:'result',   required:true,  core:true, full:true }
+  { id:'Name',      label:'Your Name',               type:'text',     required:false, placeholder:'Anonymous if left blank' },
+  { id:'MMD',       label:'MMD',                     type:'select',   required:true,  core:true, options:['Mumbai','Kolkata','Chennai','Kochi'] },
+  { id:'Date',      label:'Exam Date',               type:'date',     required:true,  core:true },
+  { id:'Surveyors', label:'Surveyors',               type:'surveyor', required:true,  core:true, full:true },
+  { id:'ShipType',  label:'Ship Type',               type:'select',   required:false, options:['Bulk Carrier','Oil Tanker','LNG Tanker','LPG Carrier','Chemical Tanker','Container Ship','General Cargo','RORO','Passenger Ship','Other'] },
+  { id:'Questions', label:'Questions Asked',         type:'textarea', required:true,  core:true, full:true, placeholder:'List all questions you remember — one per line. Even partial recall helps!' },
+  { id:'Remarks',   label:'Surveyor Style / Advice', type:'textarea', required:false, full:true, placeholder:"How was the surveyor's approach? What topics did they focus on? Any advice for future candidates?" },
+  { id:'Result',    label:'Result',                  type:'result',   required:true,  core:true, full:true }
 ];
 
 let FIELDS = [];
@@ -368,69 +335,76 @@ function showView(name, pushState) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.bnav-btn').forEach(b => b.classList.remove('active'));
-
   const viewEl = document.getElementById('view-' + name);
   if (viewEl) viewEl.classList.add('active');
-
   document.querySelectorAll('.nav-btn').forEach(b => {
     if ((name==='home'   && b.textContent.includes('Home'))   ||
         (name==='submit' && b.textContent.includes('Submit')) ||
         (name==='browse' && b.textContent.includes('Browse')))
       b.classList.add('active');
   });
-
   const bEl = document.getElementById('bnav-' + name);
   if (bEl) bEl.classList.add('active');
-
   if (pushState !== false) { try { history.pushState({ view: name }, '', '#' + name); } catch(e) {} }
-
   if (name === 'browse') loadEntries();
   if (name === 'home')   loadStats();
-  if (name === 'setup')  renderFieldEditor();
 }
 
 window.addEventListener('popstate', function(e) {
   const v = (e.state && e.state.view) ? e.state.view : 'home';
-  if (v === 'guard') {
-    history.pushState({ view:'home' }, '', '#home');
-    showView('home', false);
-  } else {
-    showView(v, false);
-  }
+  if (v === 'guard') { try{history.pushState({view:'home'},'','#home');}catch(e){} showView('home',false); }
+  else showView(v, false);
 });
 
 /* FORM BUILDER */
 function buildForm() {
-  let html = '<div class="form-grid">';
-  FIELDS.forEach(f => {
-    const fc  = f.full ? ' full' : '';
+  let html = '';
+  // Group fields into sections
+  const basicFields = FIELDS.filter(f => !f.full && f.type !== 'result');
+  const fullFields  = FIELDS.filter(f => f.full);
+
+  // Basic info section
+  if (basicFields.length) {
+    html += '<div class="form-section"><div class="section-label">Basic Information</div><div class="form-grid">';
+    basicFields.forEach(f => {
+      const req = f.required ? '<span class="req">*</span>' : '<span class="opt">(optional)</span>';
+      html += `<div class="form-group"><label>${f.label} ${req}</label>`;
+      if (f.type==='text')
+        html += `<input type="text" id="ff-${f.id}" placeholder="${f.placeholder||''}">`;
+      else if (f.type==='date')
+        html += `<input type="date" id="ff-${f.id}">`;
+      else if (f.type==='select') {
+        html += `<select id="ff-${f.id}"><option value="">— Select —</option>`;
+        (f.options||[]).forEach(o => html += `<option>${o}</option>`);
+        html += `</select>`;
+      }
+      html += `</div>`;
+    });
+    html += '</div></div>';
+  }
+
+  // Full-width fields
+  fullFields.forEach(f => {
     const req = f.required ? '<span class="req">*</span>' : '<span class="opt">(optional)</span>';
-    html += `<div class="form-group${fc}"><label>${f.label} ${req}</label>`;
-    if (f.type==='text')
-      html += `<input type="text" id="ff-${f.id}" placeholder="${f.placeholder||''}">`;
-    else if (f.type==='date')
-      html += `<input type="date" id="ff-${f.id}">`;
-    else if (f.type==='textarea')
-      html += `<textarea id="ff-${f.id}" placeholder="${f.placeholder||''}"></textarea>`;
-    else if (f.type==='select') {
-      html += `<select id="ff-${f.id}"><option value="">— Select —</option>`;
-      (f.options||[]).forEach(o => html += `<option>${o}</option>`);
-      html += `</select>`;
-    } else if (f.type==='surveyor') {
-      html += `<div class="surveyor-inner" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">`;
+    if (f.type === 'surveyor') {
+      html += `<div class="form-section"><div class="section-label">Surveyors <span class="req">*</span></div>`;
+      html += `<div class="surveyor-row">`;
       html += `<div class="surveyor-wrap"><input type="text" id="ff-Internal" placeholder="Internal surveyor name"><span class="surveyor-tag tag-int">INTERNAL</span></div>`;
       html += `<div class="surveyor-wrap"><input type="text" id="ff-External" placeholder="External surveyor name"><span class="surveyor-tag tag-ext">EXTERNAL</span></div>`;
-      html += `</div>`;
-    } else if (f.type==='result') {
+      html += `</div></div>`;
+    } else if (f.type === 'textarea') {
+      html += `<div class="form-section"><div class="form-group"><label>${f.label} ${req}</label>`;
+      html += `<textarea id="ff-${f.id}" placeholder="${f.placeholder||''}"></textarea></div></div>`;
+    } else if (f.type === 'result') {
+      html += `<div class="form-section"><div class="section-label">Result <span class="req">*</span></div>`;
       html += `<div class="result-grid">
         <div><input type="radio" name="result" id="r-pass" value="Pass" class="result-radio"><label for="r-pass" class="result-lbl lbl-pass">✅ Pass</label></div>
         <div><input type="radio" name="result" id="r-fail" value="Fail" class="result-radio"><label for="r-fail" class="result-lbl lbl-fail">❌ Fail</label></div>
         <div><input type="radio" name="result" id="r-pend" value="Pending" class="result-radio" checked><label for="r-pend" class="result-lbl lbl-pend">⏳ Pending</label></div>
-      </div>`;
+      </div></div>`;
     }
-    html += `</div>`;
   });
-  html += '</div>';
+
   document.getElementById('dynamic-form').innerHTML = html;
   const d = document.getElementById('ff-Date');
   if (d) d.valueAsDate = new Date();
@@ -459,28 +433,28 @@ async function submitForm() {
   try {
     await fetch(SCRIPT_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
     document.getElementById('success-msg').classList.add('show');
-    btn.style.display='none'; toast('✅ Report submitted!');
-  } catch(e) { toast('❌ Submit failed'); btn.disabled=false; btn.textContent='⚓ Submit Report'; }
+    btn.style.display='none'; toast('✅ Questions submitted!');
+  } catch(e) { toast('❌ Submit failed. Try again.'); btn.disabled=false; btn.textContent='⚓ Submit Questions'; }
 }
 
 function resetForm() {
   buildForm();
   document.getElementById('success-msg').classList.remove('show');
   const btn=document.getElementById('submit-btn');
-  btn.style.display=''; btn.disabled=false; btn.textContent='⚓ Submit Report';
+  btn.style.display=''; btn.disabled=false; btn.textContent='⚓ Submit Questions';
 }
 
 /* BROWSE */
 async function loadEntries() {
   const list = document.getElementById('entries-list');
-  list.innerHTML = '<div class="loading"><div class="spinner"></div>Loading reports...</div>';
+  list.innerHTML = '<div class="loading"><div class="spinner"></div>Loading questions...</div>';
   try {
     const rows = await (await fetch(SCRIPT_URL+'?action=get')).json();
     allEntries = (Array.isArray(rows)?rows:[]).filter(r=>r.Questions||r.Result);
     allEntries.sort((a,b)=>new Date(b.Timestamp||0)-new Date(a.Timestamp||0));
     renderEntries(allEntries,''); updateStats(allEntries);
   } catch(e) {
-    list.innerHTML=`<div class="empty-state"><div style="font-size:48px;opacity:.5">❌</div><h3>Could not load</h3><p>${e.message}</p></div>`;
+    list.innerHTML=`<div class="empty-state"><div style="font-size:40px">❌</div><h3>Could not load</h3><p>${e.message}</p></div>`;
   }
 }
 
@@ -493,21 +467,26 @@ function hl(text, kw) {
 function renderEntries(records, kw) {
   const list=document.getElementById('entries-list');
   const ce=document.getElementById('result-count');
-  if(ce) ce.innerHTML=records.length===allEntries.length?`<span>${records.length}</span> reports`:`Showing <span>${records.length}</span> of <span>${allEntries.length}</span> reports`;
-  if(!records.length){list.innerHTML=`<div class="empty-state"><div style="font-size:48px;opacity:.5">📭</div><h3>No reports found</h3><p>Try different keywords or clear filters.</p></div>`;return;}
+  if(ce) ce.innerHTML=records.length===allEntries.length
+    ?`<span>${records.length}</span> entries`
+    :`Showing <span>${records.length}</span> of <span>${allEntries.length}</span> entries`;
+  if(!records.length){
+    list.innerHTML=`<div class="empty-state"><div style="font-size:40px">📭</div><h3>No entries found</h3><p>Try different keywords or clear the filters.</p></div>`;
+    return;
+  }
   const k=kw||'';
   list.innerHTML=records.map(r=>{
     const rc=r.Result==='Pass'?'b-pass':r.Result==='Fail'?'b-fail':'b-pend';
-    const ri=r.Result==='Pass'?'✅':r.Result==='Fail'?'❌':'⏳';
+    const ri=r.Result==='Pass'?'✅ Pass':r.Result==='Fail'?'❌ Fail':'⏳ Pending';
     return `<div class="entry-card">
       <div class="entry-top">
         <div class="entry-meta">
           ${r.MMD?`<span class="mmd-badge">📍 ${r.MMD}</span>`:''}
-          ${r.Date?`<span>📅 ${r.Date}</span>`:''}
-          ${r.ShipType?`<span>· ${r.ShipType}</span>`:''}
-          ${r.Name&&r.Name!=='Anonymous'?`<span>· 👤 ${esc(r.Name)}</span>`:''}
+          ${r.Date?`<span class="entry-date">📅 ${r.Date}</span>`:''}
+          ${r.ShipType?`<span class="entry-ship">· ${r.ShipType}</span>`:''}
+          ${r.Name&&r.Name!=='Anonymous'?`<span class="entry-date">· 👤 ${esc(r.Name)}</span>`:''}
         </div>
-        <span class="result-badge ${rc}">${ri} ${r.Result||'Pending'}</span>
+        <span class="result-badge ${rc}">${ri}</span>
       </div>
       <div class="chips">
         ${r.Internal?`<span class="chip chip-int"><span class="chip-dot"></span>INT: ${hl(r.Internal,k)}</span>`:''}
@@ -552,56 +531,56 @@ async function exportPDF() {
       const b=[r.Questions,r.Remarks,r.Internal,r.External,r.ShipType,r.MMD,r.Name].join(' ').toLowerCase();
       return(!kw||b.includes(kw))&&(!sv||(r.Internal||'').toLowerCase().includes(sv)||(r.External||'').toLowerCase().includes(sv))&&(!mm||r.MMD===mm)&&(!re||r.Result===re);
     });
-    if(!records.length){toast('⚠ No reports to export');btn.disabled=false;btn.textContent='📄 Save as PDF';return;}
+    if(!records.length){toast('⚠ No entries to export');btn.disabled=false;btn.textContent='📄 Save as PDF';return;}
     function need(h){if(y+h>H-M){doc.addPage();y=M;}}
-    // Cover
-    doc.setFillColor(10,22,40);doc.rect(0,0,W,H,'F');
-    doc.setFontSize(40);doc.setTextColor(201,168,76);doc.text('⚓',W/2,80,{align:'center'});
-    doc.setFont('helvetica','bold');doc.setFontSize(22);doc.setTextColor(240,244,248);
-    doc.text('MEO Class-I Oral Exam',W/2,104,{align:'center'});
-    doc.text('Question Bank',W/2,115,{align:'center'});
-    doc.setFont('helvetica','normal');doc.setFontSize(11);doc.setTextColor(160,190,210);
-    doc.text('MMD India · Community Submitted Reports',W/2,129,{align:'center'});
+    // Cover — clean white
+    doc.setFillColor(255,255,255);doc.rect(0,0,W,H,'F');
+    doc.setFillColor(26,86,219);doc.rect(0,0,W,8,'F');
+    doc.setFontSize(28);doc.setFont('helvetica','bold');doc.setTextColor(26,86,219);
+    doc.text('MEO Class-I Oral Exam',W/2,70,{align:'center'});
+    doc.text('Question Bank',W/2,84,{align:'center'});
+    doc.setFont('helvetica','normal');doc.setFontSize(13);doc.setTextColor(107,114,128);
+    doc.text('MMD India · Community Submitted Questions',W/2,98,{align:'center'});
     const fp=[kw?`Keyword: "${kw}"`:'',mm?`MMD: ${mm}`:'',sv?`Surveyor: ${sv}`:'',re?`Result: ${re}`:''].filter(Boolean);
-    if(fp.length){doc.setFontSize(9);doc.setTextColor(120,149,176);doc.text('Filters: '+fp.join('  ·  '),W/2,141,{align:'center'});}
-    doc.setFontSize(10);doc.setTextColor(120,149,176);
-    doc.text(`${records.length} report${records.length!==1?'s':''}  ·  Generated ${new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})}`,W/2,151,{align:'center'});
-    doc.setDrawColor(201,168,76);doc.setLineWidth(0.4);doc.line(M+20,161,W-M-20,161);
-    doc.setFontSize(8);doc.setTextColor(100,120,140);doc.text('For candidate use only · Share freely',W/2,169,{align:'center'});
+    if(fp.length){doc.setFontSize(10);doc.setTextColor(107,114,128);doc.text('Filters: '+fp.join('  ·  '),W/2,112,{align:'center'});}
+    doc.setFontSize(11);doc.setTextColor(107,114,128);
+    doc.text(`${records.length} entr${records.length!==1?'ies':'y'}  ·  Generated ${new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})}`,W/2,124,{align:'center'});
+    doc.setDrawColor(229,231,235);doc.setLineWidth(0.5);doc.line(M+10,136,W-M-10,136);
+    doc.setFontSize(9);doc.setTextColor(156,163,175);doc.text('For candidate use only · Share freely',W/2,146,{align:'center'});
     // Reports
     records.forEach((r,idx)=>{
       doc.addPage();y=M;
-      doc.setFillColor(13,31,60);doc.rect(0,0,W,11,'F');
-      doc.setFontSize(7);doc.setFont('helvetica','normal');doc.setTextColor(120,149,176);
-      doc.text('MEO Class-I Oral Exam Question Bank',M,7.5);
-      doc.text(`Report ${idx+1} / ${records.length}`,W-M,7.5,{align:'right'});
+      doc.setFillColor(26,86,219);doc.rect(0,0,W,8,'F');
+      doc.setFontSize(7);doc.setFont('helvetica','normal');doc.setTextColor(255,255,255);
+      doc.text('MEO Class-I Oral Exam Question Bank',M,5.5);
+      doc.text(`${idx+1} / ${records.length}`,W-M,5.5,{align:'right'});
       y=18;
-      if(r.MMD){doc.setFontSize(10);doc.setFont('helvetica','bold');doc.setTextColor(201,168,76);doc.text(`📍 ${r.MMD}`,M,y);}
-      const rc=r.Result==='Pass'?[46,180,80]:r.Result==='Fail'?[220,60,50]:[220,150,20];
+      if(r.MMD){doc.setFontSize(10);doc.setFont('helvetica','bold');doc.setTextColor(26,86,219);doc.text(`📍 ${r.MMD}`,M,y);}
+      const rc=r.Result==='Pass'?[22,163,74]:r.Result==='Fail'?[220,38,38]:[217,119,6];
       doc.setFontSize(10);doc.setFont('helvetica','bold');doc.setTextColor(...rc);doc.text(r.Result||'Pending',W-M,y,{align:'right'});y+=7;
       const meta=[r.Date?`Date: ${r.Date}`:'',r.ShipType?`Ship: ${r.ShipType}`:'',r.Name&&r.Name!=='Anonymous'?`Candidate: ${r.Name}`:''].filter(Boolean).join('   |   ');
-      if(meta){doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(100,130,150);doc.text(meta,M,y);y+=5;}
-      doc.setDrawColor(45,90,142);doc.setLineWidth(0.3);doc.line(M,y,W-M,y);y+=6;
+      if(meta){doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(107,114,128);doc.text(meta,M,y);y+=5;}
+      doc.setDrawColor(229,231,235);doc.setLineWidth(0.3);doc.line(M,y,W-M,y);y+=6;
       if(r.Internal||r.External){
-        doc.setFontSize(7);doc.setFont('helvetica','bold');doc.setTextColor(160,130,60);doc.text('SURVEYORS',M,y);y+=5;
-        doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(40,40,40);
+        doc.setFontSize(7);doc.setFont('helvetica','bold');doc.setTextColor(107,114,128);doc.text('SURVEYORS',M,y);y+=5;
+        doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(30,30,30);
         if(r.Internal){need(6);doc.text(`Internal:  ${r.Internal}`,M+4,y);y+=6;}
         if(r.External){need(6);doc.text(`External:  ${r.External}`,M+4,y);y+=6;}
         y+=2;
       }
       if(r.Questions){
-        need(12);doc.setFontSize(7);doc.setFont('helvetica','bold');doc.setTextColor(160,130,60);doc.text('QUESTIONS ASKED',M,y);y+=5;
+        need(12);doc.setFontSize(7);doc.setFont('helvetica','bold');doc.setTextColor(107,114,128);doc.text('QUESTIONS ASKED',M,y);y+=5;
         const qs=y;doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(30,30,30);
         doc.splitTextToSize(r.Questions,CW-6).forEach(l=>{need(6);doc.text(l,M+6,y);y+=5.2;});
-        doc.setDrawColor(45,90,142);doc.setLineWidth(0.8);doc.line(M+1,qs-2,M+1,y);y+=4;
+        doc.setDrawColor(26,86,219);doc.setLineWidth(0.8);doc.line(M+1,qs-2,M+1,y);y+=4;
       }
       if(r.Remarks){
-        need(12);doc.setFontSize(7);doc.setFont('helvetica','bold');doc.setTextColor(160,130,60);doc.text('SURVEYOR REMARKS / ADVICE',M,y);y+=5;
-        const rs=y;doc.setFont('helvetica','italic');doc.setFontSize(10);doc.setTextColor(70,70,70);
+        need(12);doc.setFontSize(7);doc.setFont('helvetica','bold');doc.setTextColor(107,114,128);doc.text('SURVEYOR REMARKS / ADVICE',M,y);y+=5;
+        const rs=y;doc.setFont('helvetica','italic');doc.setFontSize(10);doc.setTextColor(75,85,99);
         doc.splitTextToSize(r.Remarks,CW-6).forEach(l=>{need(6);doc.text(l,M+6,y);y+=5.2;});
-        doc.setDrawColor(180,140,60);doc.setLineWidth(0.8);doc.line(M+1,rs-2,M+1,y);
+        doc.setDrawColor(245,158,11);doc.setLineWidth(0.8);doc.line(M+1,rs-2,M+1,y);
       }
-      doc.setFontSize(7);doc.setFont('helvetica','normal');doc.setTextColor(160,160,160);
+      doc.setFontSize(7);doc.setFont('helvetica','normal');doc.setTextColor(156,163,175);
       doc.text('MEO Class-I Oral Exam Question Bank',M,H-6);
       doc.text(`${idx+1} / ${records.length}`,W-M,H-6,{align:'right'});
     });
@@ -621,57 +600,11 @@ async function loadStats() {
     updateStats(allEntries);
   } catch{}
 }
-
 function updateStats(records) {
   const total=records.length,survs=new Set();let passes=0;
   records.forEach(r=>{if(r.Internal)survs.add(r.Internal.trim().toLowerCase());if(r.External)survs.add(r.External.trim().toLowerCase());if(r.Result==='Pass')passes++;});
   const pct=total?Math.round(passes/total*100)+'%':'—';
   [['stat-total',total||'—'],['stat-surv',survs.size||'—'],['stat-pass',pct]].forEach(([id,v])=>{const e=document.getElementById(id);if(e)e.textContent=v;});
-}
-
-/* SETUP TAB SWITCHER */
-function switchTab(id, e) {
-  document.querySelectorAll('.stab-content').forEach(t => t.classList.remove('active'));
-  document.querySelectorAll('.stab').forEach(b => b.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  if (e && e.target) e.target.classList.add('active');
-  if (id === 'tab-fields') renderFieldEditor();
-}
-
-/* SAVE CONFIG */
-function saveConfig() {
-  const url = document.getElementById('cfg-url')?.value.trim();
-  const status = document.getElementById('cfg-status');
-  if (!url || !url.startsWith('https://script.google.com')) {
-    status.className='cfg-status cfg-err'; status.textContent='✗ Invalid Apps Script URL.'; return;
-  }
-  SCRIPT_URL = url; localStorage.setItem('meo_url', url);
-  status.className='cfg-status cfg-ok'; status.textContent='✓ URL saved! Connected to Google Sheets.';
-  toast('✅ Connected!');
-}
-
-/* FIELD EDITOR */
-function renderFieldEditor() {
-  const list = document.getElementById('field-list');
-  if (!list) return;
-  list.innerHTML = FIELDS.map((f, i) => {
-    const isCore = f.core;
-    const typeOpts = ['text','textarea','date','select','surveyor','result']
-      .map(t => `<option value="${t}" ${f.type===t?'selected':''}>${t}</option>`).join('');
-    return `<div class="field-row" id="frow-${i}">
-      <input type="text" value="${esc(f.label)}" onchange="updateField(${i},'label',this.value)" ${isCore?'style="opacity:.6"':''}>
-      <select onchange="updateField(${i},'type',this.value)" ${isCore?'disabled':''}>${typeOpts}</select>
-      <button class="del-btn" onclick="deleteField(${i})" ${isCore?'disabled title="Core field"':''}>🗑</button>
-    </div>`;
-  }).join('');
-}
-function updateField(i, key, val) { FIELDS[i][key] = val; }
-function deleteField(i) { if(FIELDS[i].core){toast('⚠ Core fields cannot be deleted');return;} FIELDS.splice(i,1); renderFieldEditor(); }
-function addFieldRow() { FIELDS.push({id:'Custom_'+Date.now(),label:'New Field',type:'text',required:false}); renderFieldEditor(); }
-function applyFieldChanges() {
-  FIELDS.forEach(f => { if(!f.core) f.id = f.label.replace(/\s+/g,'_'); });
-  localStorage.setItem('meo_fields', JSON.stringify(FIELDS));
-  buildForm(); toast('✅ Fields updated!'); renderFieldEditor();
 }
 
 /* UTILS */
@@ -682,15 +615,7 @@ function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t
 loadState();
 buildForm();
 loadStats();
-try {
-  history.replaceState({view:'guard'},'','#');
-  history.pushState({view:'home'},'','#home');
-} catch(e) {}
-
-// Populate config URL box if already saved
-const cfgEl = document.getElementById('cfg-url');
-if (cfgEl && SCRIPT_URL) cfgEl.value = SCRIPT_URL;
-
+try{history.replaceState({view:'guard'},'','#');history.pushState({view:'home'},'','#home');}catch(e){}
 </script>
 </body>
 </html>
