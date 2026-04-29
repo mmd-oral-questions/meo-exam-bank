@@ -81,6 +81,16 @@ textarea{resize:vertical;min-height:130px;line-height:1.6;}
 .surveyor-tag{position:absolute;top:50%;right:10px;transform:translateY(-50%);font-size:10px;font-weight:700;letter-spacing:.8px;padding:2px 8px;border-radius:4px;pointer-events:none;}
 .tag-int{background:#fef3c7;color:#92400e;}
 .tag-ext{background:#dbeafe;color:#1e40af;}
+
+/* Autocomplete dropdown */
+.autocomplete-wrap{position:relative;}
+.autocomplete-list{position:absolute;top:100%;left:0;right:0;background:var(--white);border:1px solid var(--border-mid);border-top:none;border-radius:0 0 7px 7px;max-height:220px;overflow-y:auto;z-index:50;box-shadow:var(--shadow-md);display:none;}
+.autocomplete-list.show{display:block;}
+.autocomplete-item{padding:9px 13px;font-size:13px;color:var(--text-mid);cursor:pointer;border-bottom:1px solid var(--border);transition:background .1s;}
+.autocomplete-item:last-child{border-bottom:none;}
+.autocomplete-item:hover,.autocomplete-item.active{background:var(--blue-light);color:var(--blue);}
+.autocomplete-item .match{font-weight:700;color:var(--blue);}
+.autocomplete-item .alias{font-size:11px;color:var(--text-dim);margin-left:6px;}
 .result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
 .result-radio{display:none;}
 .result-lbl{display:flex;align-items:center;justify-content:center;gap:7px;padding:12px;border:2px solid var(--border);border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;transition:all .15s;color:var(--text-dim);background:var(--white);}
@@ -208,7 +218,7 @@ footer span{color:var(--blue);font-weight:500;}
     <nav>
       <button class="nav-btn active" onclick="showView('home')">Home</button>
       <button class="nav-btn" onclick="showView('submit')">Submit Questions</button>
-      <button class="nav-btn" onclick="showView('browse')">Browse Questions</button>
+      <button class="nav-btn" onclick="showView('browse')">Search Questions</button>
     </nav>
   </div>
 </header>
@@ -221,7 +231,7 @@ footer span{color:var(--blue);font-weight:500;}
     <span class="bnav-icon">📋</span>Submit
   </button>
   <button class="bnav-btn" id="bnav-browse" onclick="showView('browse')">
-    <span class="bnav-icon">🔍</span>Browse
+    <span class="bnav-icon">🔍</span>Search
   </button>
 </nav>
 
@@ -235,7 +245,7 @@ footer span{color:var(--blue);font-weight:500;}
       <p>Every candidate who shares their questions makes it easier for the next one. Help build the collective knowledge of MEO candidates across India.</p>
       <div class="hero-btns">
         <button class="btn-primary" onclick="showView('submit')">📋 Submit Questions</button>
-        <button class="btn-secondary" onclick="showView('browse')">🔍 Browse Questions</button>
+        <button class="btn-secondary" onclick="showView('browse')">🔍 Search Questions</button>
       </div>
       <div class="stats-row">
         <div class="stat"><span class="stat-num" id="stat-total">—</span><span class="stat-label">Entries Submitted</span></div>
@@ -268,7 +278,7 @@ footer span{color:var(--blue);font-weight:500;}
   <div id="view-browse" class="view">
     <div class="browse-topbar">
       <div>
-        <h2>Question Archive</h2>
+        <h2>Search Questions</h2>
         <div class="result-count" id="result-count"></div>
       </div>
       <button class="btn-pdf" id="pdf-btn" onclick="exportPDF()">📄 Save as PDF</button>
@@ -282,15 +292,42 @@ footer span{color:var(--blue);font-weight:500;}
         <button class="btn-clear" onclick="clearFilters()">✕ Clear</button>
       </div>
       <div class="filter-row">
-        <input class="filter-text" type="text" id="fil-surv" placeholder="👤 Filter by surveyor name..." oninput="filterEntries()">
+        <div class="autocomplete-wrap" style="flex:1;min-width:140px;">
+          <input class="filter-text" type="text" id="fil-surv" placeholder="👤 Filter by surveyor name..." autocomplete="off"
+            oninput="filterEntries();showSuggestions('fil-surv','ac-fil-surv',this.value)"
+            onfocus="showSuggestions('fil-surv','ac-fil-surv',this.value)"
+            onblur="setTimeout(()=>document.getElementById('ac-fil-surv')?.classList.remove('show'),200)">
+          <div class="autocomplete-list" id="ac-fil-surv"></div>
+        </div>
         <select class="filter-select" id="fil-mmd" onchange="filterEntries()">
           <option value="">All MMDs</option>
           <option>Mumbai</option><option>Kolkata</option><option>Chennai</option><option>Kochi</option>
         </select>
         <select class="filter-select" id="fil-result" onchange="filterEntries()">
           <option value="">All Results</option>
-          <option>Pass</option><option>Fail</option><option>Pending</option>
+          <option>Pass</option><option>Fail</option>
         </select>
+      </div>
+      <div class="filter-row">
+        <select class="filter-select" id="fil-date" onchange="onDateFilterChange()" style="flex:1;min-width:160px;">
+          <option value="">📅 All Dates</option>
+          <option value="1m">Last 1 Month</option>
+          <option value="2m">Last 2 Months</option>
+          <option value="3m">Last 3 Months</option>
+          <option value="6m">Last 6 Months</option>
+          <option value="1y">Last 1 Year</option>
+          <option value="custom">Custom Range...</option>
+        </select>
+        <div id="month-picker" style="display:none;flex:1;min-width:160px;">
+          <select class="filter-select" id="fil-month" onchange="filterEntries()" style="width:100%;">
+            <option value="">— Select Month —</option>
+          </select>
+        </div>
+      </div>
+      <div class="filter-row" id="custom-date-row" style="display:none;">
+        <input class="filter-text" type="date" id="fil-from" onchange="filterEntries()" style="flex:1;">
+        <span style="color:var(--text-dim);font-size:13px;">to</span>
+        <input class="filter-text" type="date" id="fil-to" onchange="filterEntries()" style="flex:1;">
       </div>
     </div>
     <div id="entries-list" class="entries-list">
@@ -308,6 +345,32 @@ footer span{color:var(--blue);font-weight:500;}
 
 <script>
 let SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxf7kn5KddHvMHOhP749Ss8tFB3eYvyw27V6ak_4lmNn8cvIyasmAYXlntiTGsy1sAQ/exec';
+
+// Known MMD Mumbai surveyors with aliases. The first item is the canonical name;
+// other items are alternative spellings/short forms that also match in autocomplete.
+const SURVEYORS = [
+  { name:'Brijesh Srivastava',  aliases:['Brij Srivastava','Srivastava'] },
+  { name:'Chandrashekharan',     aliases:[] },
+  { name:'Anil Deswal',          aliases:['Deswal'] },
+  { name:'Gadkar',               aliases:[] },
+  { name:'RK Gupta',             aliases:['Gupta','R.K. Gupta'] },
+  { name:'Arunabha Kar',         aliases:['Kar'] },
+  { name:'Upendra',              aliases:[] },
+  { name:'BK Yadav',             aliases:['Yadav','B.K. Yadav'] },
+  { name:'Mudit Mehrotra',       aliases:['Mehrotra'] },
+  { name:'Mohan Singh Pal',      aliases:['Mohan Pal','Pal'] },
+  { name:'Satish Kamath',        aliases:['Kamath'] },
+  { name:'Pakrasi',              aliases:[] },
+  { name:'Umashankar Singh',     aliases:['Umashankar'] },
+  { name:'Vishwanathan',         aliases:[] },
+  { name:'Rajeev Wad',           aliases:['Wad'] },
+  { name:'Arvind Chaudhari',     aliases:['Arbind Chaudhary','Aravind Chaudhary'] },
+  { name:'Praveen Nair',         aliases:[] },
+  { name:'Aniruddha Chakki',     aliases:['Chakki'] },
+  { name:'Shrish Kumar',         aliases:['Shirish Kumar'] },
+  { name:'Gopikrishna',          aliases:['Gopi'] },
+  { name:'Sujendra',             aliases:[] }
+];
 
 const DEFAULT_FIELDS = [
   { id:'Name',      label:'Your Name',               type:'text',     required:false, placeholder:'Anonymous if left blank' },
@@ -389,18 +452,31 @@ function buildForm() {
     if (f.type === 'surveyor') {
       html += `<div class="form-section"><div class="section-label">Surveyors <span class="req">*</span></div>`;
       html += `<div class="surveyor-row">`;
-      html += `<div class="surveyor-wrap"><input type="text" id="ff-Internal" placeholder="Internal surveyor name"><span class="surveyor-tag tag-int">INTERNAL</span></div>`;
-      html += `<div class="surveyor-wrap"><input type="text" id="ff-External" placeholder="External surveyor name"><span class="surveyor-tag tag-ext">EXTERNAL</span></div>`;
+      html += `<div class="surveyor-wrap autocomplete-wrap">
+        <input type="text" id="ff-Internal" placeholder="Internal surveyor name" autocomplete="off"
+          oninput="showSuggestions('ff-Internal','ac-Internal',this.value)"
+          onfocus="showSuggestions('ff-Internal','ac-Internal',this.value)"
+          onblur="setTimeout(()=>document.getElementById('ac-Internal')?.classList.remove('show'),200)">
+        <span class="surveyor-tag tag-int">INTERNAL</span>
+        <div class="autocomplete-list" id="ac-Internal"></div>
+      </div>`;
+      html += `<div class="surveyor-wrap autocomplete-wrap">
+        <input type="text" id="ff-External" placeholder="External surveyor name" autocomplete="off"
+          oninput="showSuggestions('ff-External','ac-External',this.value)"
+          onfocus="showSuggestions('ff-External','ac-External',this.value)"
+          onblur="setTimeout(()=>document.getElementById('ac-External')?.classList.remove('show'),200)">
+        <span class="surveyor-tag tag-ext">EXTERNAL</span>
+        <div class="autocomplete-list" id="ac-External"></div>
+      </div>`;
       html += `</div></div>`;
     } else if (f.type === 'textarea') {
       html += `<div class="form-section"><div class="form-group"><label>${f.label} ${req}</label>`;
       html += `<textarea id="ff-${f.id}" placeholder="${f.placeholder||''}"></textarea></div></div>`;
     } else if (f.type === 'result') {
       html += `<div class="form-section"><div class="section-label">Result <span class="req">*</span></div>`;
-      html += `<div class="result-grid">
-        <div><input type="radio" name="result" id="r-pass" value="Pass" class="result-radio"><label for="r-pass" class="result-lbl lbl-pass">✅ Pass</label></div>
+      html += `<div class="result-grid" style="grid-template-columns:1fr 1fr;">
+        <div><input type="radio" name="result" id="r-pass" value="Pass" class="result-radio" checked><label for="r-pass" class="result-lbl lbl-pass">✅ Pass</label></div>
         <div><input type="radio" name="result" id="r-fail" value="Fail" class="result-radio"><label for="r-fail" class="result-lbl lbl-fail">❌ Fail</label></div>
-        <div><input type="radio" name="result" id="r-pend" value="Pending" class="result-radio" checked><label for="r-pend" class="result-lbl lbl-pend">⏳ Pending</label></div>
       </div></div>`;
     }
   });
@@ -476,8 +552,8 @@ function renderEntries(records, kw) {
   }
   const k=kw||'';
   list.innerHTML=records.map(r=>{
-    const rc=r.Result==='Pass'?'b-pass':r.Result==='Fail'?'b-fail':'b-pend';
-    const ri=r.Result==='Pass'?'✅ Pass':r.Result==='Fail'?'❌ Fail':'⏳ Pending';
+    const rc=r.Result==='Pass'?'b-pass':'b-fail';
+    const ri=r.Result==='Pass'?'✅ Pass':'❌ Fail';
     return `<div class="entry-card">
       <div class="entry-top">
         <div class="entry-meta">
@@ -503,15 +579,21 @@ function filterEntries() {
   const sv=(document.getElementById('fil-surv')?.value||'').toLowerCase();
   const mm=document.getElementById('fil-mmd')?.value||'';
   const re=document.getElementById('fil-result')?.value||'';
+  const dt=document.getElementById('fil-date')?.value||'';
   renderEntries(allEntries.filter(r=>{
     const b=[r.Questions,r.Remarks,r.Internal,r.External,r.ShipType,r.MMD,r.Name].join(' ').toLowerCase();
-    return(!kw||b.includes(kw))&&(!sv||(r.Internal||'').toLowerCase().includes(sv)||(r.External||'').toLowerCase().includes(sv))&&(!mm||r.MMD===mm)&&(!re||r.Result===re);
+    return(!kw||b.includes(kw))
+      &&(!sv||(r.Internal||'').toLowerCase().includes(sv)||(r.External||'').toLowerCase().includes(sv))
+      &&(!mm||r.MMD===mm)
+      &&(!re||r.Result===re)
+      &&dateInRange(r.Date,dt);
   }),kw);
 }
 
 function clearFilters() {
-  ['fil-keyword','fil-surv'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
-  ['fil-mmd','fil-result'].forEach(id=>{const e=document.getElementById(id);if(e)e.selectedIndex=0;});
+  ['fil-keyword','fil-surv','fil-from','fil-to'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});
+  ['fil-mmd','fil-result','fil-date'].forEach(id=>{const e=document.getElementById(id);if(e)e.selectedIndex=0;});
+  document.getElementById('custom-date-row').style.display='none';
   renderEntries(allEntries,'');
 }
 
@@ -527,9 +609,10 @@ async function exportPDF() {
     const sv=(document.getElementById('fil-surv')?.value||'').toLowerCase();
     const mm=document.getElementById('fil-mmd')?.value||'';
     const re=document.getElementById('fil-result')?.value||'';
+    const dt=document.getElementById('fil-date')?.value||'';
     const records=allEntries.filter(r=>{
       const b=[r.Questions,r.Remarks,r.Internal,r.External,r.ShipType,r.MMD,r.Name].join(' ').toLowerCase();
-      return(!kw||b.includes(kw))&&(!sv||(r.Internal||'').toLowerCase().includes(sv)||(r.External||'').toLowerCase().includes(sv))&&(!mm||r.MMD===mm)&&(!re||r.Result===re);
+      return(!kw||b.includes(kw))&&(!sv||(r.Internal||'').toLowerCase().includes(sv)||(r.External||'').toLowerCase().includes(sv))&&(!mm||r.MMD===mm)&&(!re||r.Result===re)&&dateInRange(r.Date,dt);
     });
     if(!records.length){toast('⚠ No entries to export');btn.disabled=false;btn.textContent='📄 Save as PDF';return;}
     function need(h){if(y+h>H-M){doc.addPage();y=M;}}
@@ -556,8 +639,8 @@ async function exportPDF() {
       doc.text(`${idx+1} / ${records.length}`,W-M,5.5,{align:'right'});
       y=18;
       if(r.MMD){doc.setFontSize(10);doc.setFont('helvetica','bold');doc.setTextColor(26,86,219);doc.text(`📍 ${r.MMD}`,M,y);}
-      const rc=r.Result==='Pass'?[22,163,74]:r.Result==='Fail'?[220,38,38]:[217,119,6];
-      doc.setFontSize(10);doc.setFont('helvetica','bold');doc.setTextColor(...rc);doc.text(r.Result||'Pending',W-M,y,{align:'right'});y+=7;
+      const rc=r.Result==='Pass'?[22,163,74]:[220,38,38];
+      doc.setFontSize(10);doc.setFont('helvetica','bold');doc.setTextColor(...rc);doc.text(r.Result||'',W-M,y,{align:'right'});y+=7;
       const meta=[r.Date?`Date: ${r.Date}`:'',r.ShipType?`Ship: ${r.ShipType}`:'',r.Name&&r.Name!=='Anonymous'?`Candidate: ${r.Name}`:''].filter(Boolean).join('   |   ');
       if(meta){doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(107,114,128);doc.text(meta,M,y);y+=5;}
       doc.setDrawColor(229,231,235);doc.setLineWidth(0.3);doc.line(M,y,W-M,y);y+=6;
@@ -605,6 +688,76 @@ function updateStats(records) {
   records.forEach(r=>{if(r.Internal)survs.add(r.Internal.trim().toLowerCase());if(r.External)survs.add(r.External.trim().toLowerCase());if(r.Result==='Pass')passes++;});
   const pct=total?Math.round(passes/total*100)+'%':'—';
   [['stat-total',total||'—'],['stat-surv',survs.size||'—'],['stat-pass',pct]].forEach(([id,v])=>{const e=document.getElementById(id);if(e)e.textContent=v;});
+}
+
+/* AUTOCOMPLETE — Surveyor name suggestions */
+function showSuggestions(inputId, listId, query) {
+  const list = document.getElementById(listId);
+  if (!list) return;
+  const q = (query||'').trim().toLowerCase();
+  if (!q) { list.classList.remove('show'); return; }
+
+  // Match if any alias OR canonical name contains the typed text
+  const matches = SURVEYORS.filter(s => {
+    if (s.name.toLowerCase().includes(q)) return true;
+    return s.aliases.some(a => a.toLowerCase().includes(q));
+  });
+
+  if (!matches.length) { list.classList.remove('show'); return; }
+
+  // Highlight the matched portion
+  function highlight(text, kw) {
+    const idx = text.toLowerCase().indexOf(kw);
+    if (idx < 0) return esc(text);
+    return esc(text.slice(0,idx)) + '<span class="match">' + esc(text.slice(idx,idx+kw.length)) + '</span>' + esc(text.slice(idx+kw.length));
+  }
+
+  list.innerHTML = matches.slice(0,8).map(s => {
+    const aliases = s.aliases.length ? `<span class="alias">(${s.aliases.join(', ')})</span>` : '';
+    return `<div class="autocomplete-item" onmousedown="pickSuggestion('${inputId}','${listId}','${esc(s.name)}')">${highlight(s.name,q)}${aliases}</div>`;
+  }).join('');
+  list.classList.add('show');
+}
+
+function pickSuggestion(inputId, listId, name) {
+  const input = document.getElementById(inputId);
+  if (input) {
+    input.value = name;
+    input.dispatchEvent(new Event('input'));
+  }
+  document.getElementById(listId)?.classList.remove('show');
+  if (inputId === 'fil-surv') filterEntries();
+}
+
+/* DATE FILTER */
+function onDateFilterChange() {
+  const v = document.getElementById('fil-date').value;
+  const customRow  = document.getElementById('custom-date-row');
+  const monthPicker = document.getElementById('month-picker');
+  customRow.style.display  = (v === 'custom') ? 'flex' : 'none';
+  monthPicker.style.display = 'none';
+  // (Month picker reserved for future — kept hidden for now)
+  filterEntries();
+}
+
+function dateInRange(dateStr, mode) {
+  if (!mode || !dateStr) return true;
+  const d = new Date(dateStr);
+  if (isNaN(d)) return true;
+  const now = new Date();
+  if (mode === '1m') { const c=new Date(now); c.setMonth(c.getMonth()-1); return d >= c; }
+  if (mode === '2m') { const c=new Date(now); c.setMonth(c.getMonth()-2); return d >= c; }
+  if (mode === '3m') { const c=new Date(now); c.setMonth(c.getMonth()-3); return d >= c; }
+  if (mode === '6m') { const c=new Date(now); c.setMonth(c.getMonth()-6); return d >= c; }
+  if (mode === '1y') { const c=new Date(now); c.setFullYear(c.getFullYear()-1); return d >= c; }
+  if (mode === 'custom') {
+    const from = document.getElementById('fil-from')?.value;
+    const to   = document.getElementById('fil-to')?.value;
+    if (from && d < new Date(from)) return false;
+    if (to)   { const t = new Date(to); t.setHours(23,59,59); if (d > t) return false; }
+    return true;
+  }
+  return true;
 }
 
 /* UTILS */
