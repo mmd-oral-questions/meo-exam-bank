@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MEO Class-I Oral Exam Question Bank</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
   :root {
     --navy: #0a1628; --deep: #0d1f3c; --ocean: #1a3a5c;
@@ -171,14 +172,52 @@
   .success-msg p { color:var(--text-dim); font-size:14px; }
 
   /* ── BROWSE ── */
-  .browse-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; flex-wrap:wrap; gap:14px; }
-  .browse-header h2 { font-family:'Playfair Display',serif; font-size:30px; color:var(--white); }
+  .browse-header {
+    display:flex; align-items:flex-start; justify-content:space-between;
+    margin-bottom:20px; flex-wrap:wrap; gap:14px;
+  }
+  .browse-header-left h2 { font-family:'Playfair Display',serif; font-size:30px; color:var(--white); margin-bottom:6px; }
+  .result-count { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text-dim); letter-spacing:1px; }
+  .result-count span { color:var(--gold); }
+
+  /* keyword search */
+  .filter-bar { display:flex; flex-direction:column; gap:10px; margin-bottom:24px; }
+  .filter-row { display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .keyword-wrap { position:relative; flex:1; min-width:200px; }
+  .keyword-wrap input {
+    width:100%; padding:10px 16px 10px 40px;
+    background:var(--card); border:1px solid var(--border); border-radius:6px;
+    color:var(--text); font-family:'IBM Plex Sans',sans-serif; font-size:13px; outline:none;
+    transition:border-color .2s;
+  }
+  .keyword-wrap input:focus { border-color:var(--horizon); }
+  .keyword-wrap .search-icon { position:absolute; left:13px; top:50%; transform:translateY(-50%); font-size:14px; pointer-events:none; opacity:.5; }
+  .keyword-highlight { background:rgba(201,168,76,.4); border-radius:2px; padding:0 2px; color:var(--white); }
+
   .filters { display:flex; gap:10px; flex-wrap:wrap; }
   .filter-input {
     background:var(--card); border:1px solid var(--border); border-radius:6px;
     padding:9px 14px; color:var(--text); font-family:'IBM Plex Sans',sans-serif; font-size:13px; outline:none;
   }
   .filter-input:focus { border-color:var(--horizon); }
+
+  .clear-btn {
+    padding:9px 14px; background:transparent; border:1px solid var(--border);
+    border-radius:6px; color:var(--text-dim); font-family:'IBM Plex Mono',monospace;
+    font-size:11px; cursor:pointer; transition:all .2s; white-space:nowrap;
+  }
+  .clear-btn:hover { border-color:var(--horizon); color:var(--text); }
+
+  /* PDF button */
+  .pdf-btn {
+    padding:10px 20px; background:linear-gradient(135deg,#7b0000,#c0392b);
+    border:1px solid #e74c3c; border-radius:6px; color:var(--white);
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:1px;
+    text-transform:uppercase; cursor:pointer; transition:opacity .2s; white-space:nowrap;
+  }
+  .pdf-btn:hover { opacity:.85; }
+  .pdf-btn:disabled { opacity:.4; cursor:not-allowed; }
+
   .entries-list { display:flex; flex-direction:column; gap:18px; }
   .entry-card {
     background:var(--card); border:1px solid var(--border); border-radius:10px;
@@ -213,8 +252,6 @@
   }
   .setup-card h2 { font-family:'Playfair Display',serif; font-size:26px; color:var(--white); margin-bottom:6px; }
   .setup-subtitle { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--gold); letter-spacing:2px; text-transform:uppercase; margin-bottom:32px; }
-
-  /* tabs inside setup */
   .setup-tabs { display:flex; gap:4px; margin-bottom:32px; border-bottom:1px solid var(--border); }
   .stab {
     padding:10px 20px; background:transparent; border:none; border-bottom:2px solid transparent;
@@ -225,7 +262,6 @@
   .stab.active { border-bottom-color:var(--gold); color:var(--gold); }
   .stab-content { display:none; }
   .stab-content.active { display:block; animation:fadeUp .3s ease; }
-
   .step { display:flex; gap:18px; margin-bottom:28px; padding-bottom:28px; border-bottom:1px solid var(--border); }
   .step:last-of-type { border-bottom:none; margin-bottom:0; padding-bottom:0; }
   .step-num {
@@ -242,8 +278,6 @@
     margin-top:10px; overflow-x:auto; line-height:1.8; white-space:pre;
   }
   .highlight { color:var(--gold); }
-
-  /* config section */
   .config-section { margin-top:32px; padding-top:28px; border-top:1px solid var(--border); }
   .cfg-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
   .save-btn {
@@ -255,8 +289,6 @@
   .cfg-status { font-family:'IBM Plex Mono',monospace; font-size:11px; margin-top:10px; padding:8px 14px; border-radius:4px; display:none; }
   .cfg-ok { display:block; background:rgba(46,204,113,.1); color:var(--pass); border:1px solid rgba(46,204,113,.2); }
   .cfg-err { display:block; background:rgba(231,76,60,.1); color:var(--fail); border:1px solid rgba(231,76,60,.2); }
-
-  /* modify fields section */
   .field-editor { margin-top:28px; }
   .field-list { display:flex; flex-direction:column; gap:10px; margin-bottom:16px; }
   .field-row {
@@ -305,6 +337,8 @@
     .result-grid { grid-template-columns:1fr 1fr; }
     nav { display:none; }
     .stats-row { gap:20px; }
+    .filter-row { flex-direction:column; }
+    .keyword-wrap { min-width:100%; }
   }
 </style>
 </head>
@@ -367,10 +401,31 @@
 
   <!-- ══ BROWSE ══ -->
   <div id="view-browse" class="view">
+
     <div class="browse-header">
-      <h2>Question Archive</h2>
-      <div class="filters">
-        <input class="filter-input" type="text" id="fil-surv" placeholder="🔍 Surveyor name..." oninput="filterEntries()">
+      <div class="browse-header-left">
+        <h2>Question Archive</h2>
+        <div class="result-count" id="result-count"></div>
+      </div>
+      <button class="pdf-btn" id="pdf-btn" onclick="exportPDF()">📄 Save as PDF</button>
+    </div>
+
+    <div class="filter-bar">
+      <!-- Keyword search row -->
+      <div class="filter-row">
+        <div class="keyword-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="fil-keyword"
+            placeholder="Search by keyword — MARPOL, ISM, boiler, EEBD, stability..."
+            oninput="filterEntries()">
+        </div>
+        <button class="clear-btn" onclick="clearFilters()">✕ Clear</button>
+      </div>
+      <!-- Dropdown filters row -->
+      <div class="filter-row filters">
+        <input class="filter-input" type="text" id="fil-surv"
+          placeholder="👤 Surveyor name..." oninput="filterEntries()"
+          style="flex:1;min-width:150px;">
         <select class="filter-input" id="fil-mmd" onchange="filterEntries()">
           <option value="">All MMDs</option>
           <option>Mumbai</option>
@@ -386,6 +441,7 @@
         </select>
       </div>
     </div>
+
     <div id="entries-list" class="entries-list">
       <div class="loading"><div class="spinner"></div>Loading...</div>
     </div>
@@ -402,76 +458,22 @@
 
 <script>
 // ════════════════════════════════════════════════════════
-//
-//  ███████  ██████  ██████  ███    ███     ██████  ██████  ███    ██ ███████ ██  ██████
-//  ██      ██    ██ ██   ██ ████  ████    ██      ██    ██ ████   ██ ██      ██ ██
-//  █████   ██    ██ ██████  ██ ████ ██    ██      ██    ██ ██ ██  ██ █████   ██ ██   ███
-//  ██      ██    ██ ██   ██ ██  ██  ██    ██      ██    ██ ██  ██ ██ ██      ██ ██    ██
-//  ██       ██████  ██   ██ ██      ██     ██████  ██████  ██   ████ ██      ██  ██████
-//
-//  ════════════════════════════════════════════════════════
-//  HOW TO CUSTOMISE THIS FILE
-//  ════════════════════════════════════════════════════════
-//
-//  1. CONNECT TO GOOGLE SHEETS
-//     Paste your Apps Script URL in the line below:
-//
-//     SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_URL_HERE/exec'
-//
-//  2. ADD / REMOVE / RENAME FORM FIELDS
-//     Edit the FORM_FIELDS array below.
-//     Each field is one object like:
-//
-//     { id:'MyField', label:'My Field Label', type:'text', required:true }
-//
-//     Types available:
-//       'text'     → single-line text box
-//       'textarea' → multi-line text box
-//       'date'     → date picker
-//       'select'   → dropdown (add options:['A','B','C'])
-//       'surveyor' → special two-box row (internal + external)
-//       'result'   → special Pass/Fail/Pending radio row
-//
-//     core:true   → cannot be deleted from the UI editor
-//     full:true   → field spans full width
-//     required:true → mandatory field (shows red *)
-//
-//  ════════════════════════════════════════════════════════
-
-// ── STEP 1: Paste your Google Apps Script URL here ──────
+//  CONFIG — paste your Google Apps Script URL here
+// ════════════════════════════════════════════════════════
 let SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxf7kn5KddHvMHOhP749Ss8tFB3eYvyw27V6ak_4lmNn8cvIyasmAYXlntiTGsy1sAQ/exec';
 
-// ── STEP 2: Define your form fields here ────────────────
+// ════════════════════════════════════════════════════════
+//  FORM FIELDS
+// ════════════════════════════════════════════════════════
 const DEFAULT_FIELDS = [
-  {
-    id:'Name', label:'Your Name', type:'text', required:false,
-    placeholder:'Anonymous if left blank'
-  },
-  {
-    id:'MMD', label:'MMD', type:'select', required:true, core:true,
-    options:['Mumbai','Kolkata','Chennai','Kochi']
-  },
-  {
-    id:'Date', label:'Exam Date', type:'date', required:true, core:true
-  },
-  {
-    id:'Surveyors', label:'Surveyors', type:'surveyor', required:true, core:true, full:true
-  },
-  {
-    id:'ShipType', label:'Ship Type', type:'select', required:false,
-    options:['Bulk Carrier','Oil Tanker','LNG Tanker','LPG Carrier','Chemical Tanker','Container Ship','General Cargo','RORO','Passenger Ship','Other']
-  },
-  {
-    id:'Questions', label:'Questions Asked', type:'textarea', required:true, core:true, full:true,
-    placeholder:'List all questions you remember — one per line. Even partial recall helps!'
-  },
-  {
-    id:'Remarks', label:'Surveyor Style / Advice', type:'textarea', required:false, full:true,
-    placeholder:'How was the surveyor\'s approach? What topics did they focus on? Any advice?'
-  },
-  {
-    id:'Result', label:'Result', type:'result', required:true, core:true, full:true
-  }
+  { id:'Name', label:'Your Name', type:'text', required:false, placeholder:'Anonymous if left blank' },
+  { id:'MMD', label:'MMD', type:'select', required:true, core:true, options:['Mumbai','Kolkata','Chennai','Kochi'] },
+  { id:'Date', label:'Exam Date', type:'date', required:true, core:true },
+  { id:'Surveyors', label:'Surveyors', type:'surveyor', required:true, core:true, full:true },
+  { id:'ShipType', label:'Ship Type', type:'select', required:false, options:['Bulk Carrier','Oil Tanker','LNG Tanker','LPG Carrier','Chemical Tanker','Container Ship','General Cargo','RORO','Passenger Ship','Other'] },
+  { id:'Questions', label:'Questions Asked', type:'textarea', required:true, core:true, full:true, placeholder:'List all questions you remember — one per line. Even partial recall helps!' },
+  { id:'Remarks', label:'Surveyor Style / Advice', type:'textarea', required:false, full:true, placeholder:'How was the surveyor\'s approach? What topics did they focus on? Any advice?' },
+  { id:'Result', label:'Result', type:'result', required:true, core:true, full:true }
 ];
 
 // ════════════════════════════════════════════════════════
@@ -498,7 +500,6 @@ function showView(name) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('view-' + name).classList.add('active');
-  // highlight matching nav button
   document.querySelectorAll('.nav-btn').forEach(b => {
     if (
       (name==='home'   && b.textContent.toLowerCase().includes('home'))   ||
@@ -531,27 +532,21 @@ function buildForm() {
     const req = f.required ? '<span class="req">*</span>' : '<span class="opt">(optional)</span>';
     html += `<div class="form-group${fullClass}">`;
     html += `<label>${f.label} ${req}</label>`;
-
     if (f.type==='text') {
       html += `<input type="text" id="ff-${f.id}" placeholder="${f.placeholder||''}">`;
-
     } else if (f.type==='date') {
       html += `<input type="date" id="ff-${f.id}">`;
-
     } else if (f.type==='textarea') {
       html += `<textarea id="ff-${f.id}" placeholder="${f.placeholder||''}"></textarea>`;
-
     } else if (f.type==='select') {
       html += `<select id="ff-${f.id}"><option value="">— Select —</option>`;
       (f.options||[]).forEach(o => html += `<option>${o}</option>`);
       html += `</select>`;
-
     } else if (f.type==='surveyor') {
       html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">`;
       html += `<div class="surveyor-wrap"><input type="text" id="ff-Internal" placeholder="Internal surveyor name"><span class="surveyor-tag tag-int">INTERNAL</span></div>`;
       html += `<div class="surveyor-wrap"><input type="text" id="ff-External" placeholder="External surveyor name"><span class="surveyor-tag tag-ext">EXTERNAL</span></div>`;
       html += `</div>`;
-
     } else if (f.type==='result') {
       html += `<div class="result-grid">
         <div><input type="radio" name="result" id="r-pass" value="Pass" class="result-radio"><label for="r-pass" class="result-lbl lbl-pass">✅ Pass</label></div>
@@ -559,13 +554,10 @@ function buildForm() {
         <div><input type="radio" name="result" id="r-pend" value="Pending" class="result-radio" checked><label for="r-pend" class="result-lbl lbl-pend">⏳ Pending</label></div>
       </div>`;
     }
-
     html += `</div>`;
   });
   html += '</div>';
   container.innerHTML = html;
-
-  // Set today's date
   const dateEl = document.getElementById('ff-Date');
   if (dateEl) dateEl.valueAsDate = new Date();
 }
@@ -574,62 +566,35 @@ function buildForm() {
 //  SUBMIT
 // ════════════════════════════════════════════════════════
 async function submitForm() {
-  if (!SCRIPT_URL) {
-    toast('⚠ Please set up Google Sheets URL in Setup tab first');
-    showView('setup'); return;
-  }
-
-  // Collect values
+  if (!SCRIPT_URL) { toast('⚠ Script URL not configured'); return; }
   const data = {};
-  let valid = true;
-  let firstInvalid = null;
-
+  let valid = true, firstInvalid = null;
   FIELDS.forEach(f => {
     if (f.type==='surveyor') {
       data['Internal'] = document.getElementById('ff-Internal')?.value.trim() || '';
       data['External'] = document.getElementById('ff-External')?.value.trim() || '';
-      if (f.required && (!data['Internal'] || !data['External'])) {
-        valid=false; if(!firstInvalid) firstInvalid='ff-Internal';
-      }
+      if (f.required && (!data['Internal'] || !data['External'])) { valid=false; if(!firstInvalid) firstInvalid='ff-Internal'; }
     } else if (f.type==='result') {
       data['Result'] = document.querySelector('input[name="result"]:checked')?.value || '';
-      if (f.required && !data['Result']) { valid=false; }
+      if (f.required && !data['Result']) valid=false;
     } else {
       const el = document.getElementById('ff-'+f.id);
       if (el) {
         data[f.id] = el.value.trim ? el.value.trim() : el.value;
-        if (f.required && !data[f.id]) {
-          valid=false; if(!firstInvalid) firstInvalid='ff-'+f.id;
-        }
+        if (f.required && !data[f.id]) { valid=false; if(!firstInvalid) firstInvalid='ff-'+f.id; }
       }
     }
   });
-
-  if (!valid) {
-    toast('⚠ Please fill all required fields');
-    if (firstInvalid) document.getElementById(firstInvalid)?.focus();
-    return;
-  }
-
+  if (!valid) { toast('⚠ Please fill all required fields'); if(firstInvalid) document.getElementById(firstInvalid)?.focus(); return; }
   const btn = document.getElementById('submit-btn');
-  btn.disabled = true;
-  btn.textContent = '⏳ Submitting...';
-
+  btn.disabled = true; btn.textContent = '⏳ Submitting...';
   try {
-    // Google Apps Script requires no-cors for POST from browser
-    await fetch(SCRIPT_URL, {
-      method:'POST',
-      mode:'no-cors',
-      headers:{'Content-Type':'application/json'},
-      body: JSON.stringify(data)
-    });
+    await fetch(SCRIPT_URL, { method:'POST', mode:'no-cors', headers:{'Content-Type':'application/json'}, body:JSON.stringify(data) });
     document.getElementById('success-msg').classList.add('show');
     btn.style.display = 'none';
     toast('✅ Report submitted!');
   } catch(e) {
-    toast('❌ Submit failed. Check your URL in Setup.');
-    btn.disabled = false;
-    btn.textContent = '⚓ Submit Report';
+    toast('❌ Submit failed. Check your URL.'); btn.disabled=false; btn.textContent='⚓ Submit Report';
   }
 }
 
@@ -637,9 +602,7 @@ function resetForm() {
   buildForm();
   document.getElementById('success-msg').classList.remove('show');
   const btn = document.getElementById('submit-btn');
-  btn.style.display = '';
-  btn.disabled = false;
-  btn.textContent = '⚓ Submit Report';
+  btn.style.display=''; btn.disabled=false; btn.textContent='⚓ Submit Report';
 }
 
 // ════════════════════════════════════════════════════════
@@ -648,30 +611,43 @@ function resetForm() {
 async function loadEntries() {
   const list = document.getElementById('entries-list');
   if (!SCRIPT_URL) {
-    list.innerHTML = `<div class="empty-state"><div style="font-size:48px;opacity:.5">⚙</div><h3>Setup Required</h3><p>Go to Setup tab → Google Sheets Setup and paste your Apps Script URL.</p></div>`;
+    list.innerHTML = `<div class="empty-state"><div style="font-size:48px;opacity:.5">⚙</div><h3>Not configured</h3><p>Script URL missing.</p></div>`;
     return;
   }
   list.innerHTML = '<div class="loading"><div class="spinner"></div>Loading reports...</div>';
   try {
     const res = await fetch(SCRIPT_URL + '?action=get');
     const rows = await res.json();
-    // Filter out empty rows
-    allEntries = (Array.isArray(rows) ? rows : []).filter(r => r.Questions || r.Result);
-    // Sort newest first by Timestamp
-    allEntries.sort((a,b) => new Date(b.Timestamp||0) - new Date(a.Timestamp||0));
-    renderEntries(allEntries);
+    allEntries = (Array.isArray(rows)?rows:[]).filter(r=>r.Questions||r.Result);
+    allEntries.sort((a,b)=>new Date(b.Timestamp||0)-new Date(a.Timestamp||0));
+    renderEntries(allEntries, '');
     updateStats(allEntries);
   } catch(e) {
-    list.innerHTML = `<div class="empty-state"><div style="font-size:48px;opacity:.5">❌</div><h3>Could not load</h3><p>${e.message}. Check your Setup URL.</p></div>`;
+    list.innerHTML = `<div class="empty-state"><div style="font-size:48px;opacity:.5">❌</div><h3>Could not load</h3><p>${e.message}</p></div>`;
   }
 }
 
-function renderEntries(records) {
+// ── highlight keyword in text ──
+function highlight(text, kw) {
+  if (!kw || !text) return esc(text||'');
+  const escaped = esc(text);
+  const safe = kw.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
+  return escaped.replace(new RegExp(`(${safe})`, 'gi'), '<mark class="keyword-highlight">$1</mark>');
+}
+
+function renderEntries(records, kw) {
   const list = document.getElementById('entries-list');
+  const countEl = document.getElementById('result-count');
+  if (countEl) {
+    countEl.innerHTML = records.length === allEntries.length
+      ? `<span>${records.length}</span> reports`
+      : `Showing <span>${records.length}</span> of <span>${allEntries.length}</span> reports`;
+  }
   if (!records.length) {
-    list.innerHTML = `<div class="empty-state"><div style="font-size:48px;opacity:.5">📭</div><h3>No reports yet</h3><p>Be the first to submit an exam report!</p></div>`;
+    list.innerHTML = `<div class="empty-state"><div style="font-size:48px;opacity:.5">📭</div><h3>No reports found</h3><p>Try different keywords or clear the filters.</p></div>`;
     return;
   }
+  const k = kw || '';
   list.innerHTML = records.map(r => {
     const rc = r.Result==='Pass'?'b-pass':r.Result==='Fail'?'b-fail':'b-pend';
     const ri = r.Result==='Pass'?'✅':r.Result==='Fail'?'❌':'⏳';
@@ -682,7 +658,6 @@ function renderEntries(records) {
           <div class="entry-meta">
             ${r.MMD?`<span class="mmd-badge">📍 ${r.MMD}</span>`:''}
             ${r.Date?`<span>📅 ${r.Date}</span>`:''}
-            ${r.ExamClass?`<span>· ${r.ExamClass}</span>`:''}
             ${r.ShipType?`<span>· ${r.ShipType}</span>`:''}
             ${r.Name&&r.Name!=='Anonymous'&&r.Name?`<span>· 👤 ${esc(r.Name)}</span>`:''}
           </div>
@@ -690,26 +665,190 @@ function renderEntries(records) {
         <span class="result-badge ${rc}">${ri} ${r.Result||'Pending'}</span>
       </div>
       <div class="chips">
-        ${r.Internal?`<span class="chip chip-int"><span class="chip-dot"></span>INT: ${esc(r.Internal)}</span>`:''}
-        ${r.External?`<span class="chip chip-ext"><span class="chip-dot"></span>EXT: ${esc(r.External)}</span>`:''}
+        ${r.Internal?`<span class="chip chip-int"><span class="chip-dot"></span>INT: ${highlight(r.Internal,k)}</span>`:''}
+        ${r.External?`<span class="chip chip-ext"><span class="chip-dot"></span>EXT: ${highlight(r.External,k)}</span>`:''}
       </div>
-      ${r.Questions?`<div class="q-label">Questions Asked</div><div class="q-text">${esc(r.Questions)}</div>`:''}
-      ${r.Remarks?`<div class="q-label" style="margin-top:14px;">Surveyor Remarks / Advice</div><div class="r-text">${esc(r.Remarks)}</div>`:''}
+      ${r.Questions?`<div class="q-label">Questions Asked</div><div class="q-text">${highlight(r.Questions,k)}</div>`:''}
+      ${r.Remarks?`<div class="q-label" style="margin-top:14px;">Surveyor Remarks / Advice</div><div class="r-text">${highlight(r.Remarks,k)}</div>`:''}
     </div>`;
   }).join('');
 }
 
 function filterEntries() {
-  const sv = document.getElementById('fil-surv').value.toLowerCase();
-  const mm = document.getElementById('fil-mmd').value;
-  const re = document.getElementById('fil-result').value;
+  const kw = (document.getElementById('fil-keyword')?.value||'').toLowerCase().trim();
+  const sv = (document.getElementById('fil-surv')?.value||'').toLowerCase();
+  const mm = document.getElementById('fil-mmd')?.value||'';
+  const re = document.getElementById('fil-result')?.value||'';
   const f = allEntries.filter(r => {
-    const survOk = !sv || (r.Internal||'').toLowerCase().includes(sv) || (r.External||'').toLowerCase().includes(sv);
-    const mmdOk  = !mm || r.MMD===mm;
-    const resOk  = !re || r.Result===re;
-    return survOk && mmdOk && resOk;
+    const blob = [r.Questions,r.Remarks,r.Internal,r.External,r.ShipType,r.MMD,r.Name].join(' ').toLowerCase();
+    return (!kw||blob.includes(kw))
+        && (!sv||(r.Internal||'').toLowerCase().includes(sv)||(r.External||'').toLowerCase().includes(sv))
+        && (!mm||r.MMD===mm)
+        && (!re||r.Result===re);
   });
-  renderEntries(f);
+  renderEntries(f, kw);
+}
+
+function clearFilters() {
+  ['fil-keyword','fil-surv'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  ['fil-mmd','fil-result'].forEach(id=>{ const el=document.getElementById(id); if(el) el.selectedIndex=0; });
+  renderEntries(allEntries,'');
+}
+
+// ════════════════════════════════════════════════════════
+//  PDF EXPORT
+// ════════════════════════════════════════════════════════
+async function exportPDF() {
+  const btn = document.getElementById('pdf-btn');
+  btn.disabled=true; btn.textContent='⏳ Generating...';
+  try {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation:'portrait', unit:'mm', format:'a4' });
+    const W=210, H=297, M=15, CW=W-M*2;
+    let y = M;
+
+    // collect filtered records
+    const kw  = (document.getElementById('fil-keyword')?.value||'').toLowerCase().trim();
+    const sv  = (document.getElementById('fil-surv')?.value||'').toLowerCase();
+    const mm  = document.getElementById('fil-mmd')?.value||'';
+    const re  = document.getElementById('fil-result')?.value||'';
+    const records = allEntries.filter(r=>{
+      const blob=[r.Questions,r.Remarks,r.Internal,r.External,r.ShipType,r.MMD,r.Name].join(' ').toLowerCase();
+      return (!kw||blob.includes(kw))&&(!sv||(r.Internal||'').toLowerCase().includes(sv)||(r.External||'').toLowerCase().includes(sv))&&(!mm||r.MMD===mm)&&(!re||r.Result===re);
+    });
+
+    if (!records.length) { toast('⚠ No reports to export'); btn.disabled=false; btn.textContent='📄 Save as PDF'; return; }
+
+    // helper: new page if needed
+    function need(h) { if (y+h > H-M) { doc.addPage(); y=M; } }
+
+    // helper: wrapped text block, returns height used
+    function block(txt, x, maxW, size, color, style) {
+      doc.setFontSize(size); doc.setTextColor(...color); doc.setFont('helvetica', style||'normal');
+      const lines = doc.splitTextToSize(String(txt||''), maxW);
+      lines.forEach(l => { need(size*0.5); doc.text(l,x,y); y+=size*0.45; });
+    }
+
+    // ── COVER PAGE ──────────────────────────────────────
+    doc.setFillColor(10,22,40);
+    doc.rect(0,0,W,H,'F');
+
+    // anchor symbol area
+    doc.setFontSize(40); doc.setTextColor(201,168,76);
+    doc.text('⚓', W/2, 80, {align:'center'});
+
+    doc.setFont('helvetica','bold');
+    doc.setFontSize(22); doc.setTextColor(240,244,248);
+    doc.text('MEO Class-I Oral Exam', W/2, 105, {align:'center'});
+    doc.text('Question Bank', W/2, 116, {align:'center'});
+
+    doc.setFont('helvetica','normal');
+    doc.setFontSize(11); doc.setTextColor(160,190,210);
+    doc.text('MMD India · Community Submitted Reports', W/2, 130, {align:'center'});
+
+    // filters applied
+    const filterParts = [
+      kw  ? `Keyword: "${kw}"` : '',
+      mm  ? `MMD: ${mm}` : '',
+      sv  ? `Surveyor: ${sv}` : '',
+      re  ? `Result: ${re}` : '',
+    ].filter(Boolean);
+    if (filterParts.length) {
+      doc.setFontSize(9); doc.setTextColor(120,149,176);
+      doc.text('Filters: ' + filterParts.join('  ·  '), W/2, 142, {align:'center'});
+    }
+
+    doc.setFontSize(10); doc.setTextColor(120,149,176);
+    const dateStr = new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+    doc.text(`${records.length} report${records.length!==1?'s':''}  ·  Generated ${dateStr}`, W/2, 152, {align:'center'});
+
+    doc.setDrawColor(201,168,76); doc.setLineWidth(0.4);
+    doc.line(M+20, 162, W-M-20, 162);
+
+    doc.setFontSize(8); doc.setTextColor(100,120,140);
+    doc.text('For candidate use only · Share freely · mmd-oral-questions.github.io', W/2, 170, {align:'center'});
+
+    // ── ONE PAGE PER REPORT ─────────────────────────────
+    records.forEach((r, idx) => {
+      doc.addPage();
+      y = M;
+
+      // top bar
+      doc.setFillColor(13,31,60);
+      doc.rect(0,0,W,11,'F');
+      doc.setFontSize(7); doc.setFont('helvetica','normal'); doc.setTextColor(120,149,176);
+      doc.text('MEO Class-I Oral Exam Question Bank', M, 7.5);
+      doc.text(`Report ${idx+1} / ${records.length}`, W-M, 7.5, {align:'right'});
+      y = 18;
+
+      // MMD + Result on same line
+      if (r.MMD) { doc.setFontSize(10); doc.setFont('helvetica','bold'); doc.setTextColor(201,168,76); doc.text(`📍 ${r.MMD}`, M, y); }
+      const resColor = r.Result==='Pass'?[46,180,80]:r.Result==='Fail'?[220,60,50]:[220,150,20];
+      doc.setFontSize(10); doc.setFont('helvetica','bold'); doc.setTextColor(...resColor);
+      doc.text(r.Result||'Pending', W-M, y, {align:'right'});
+      y += 7;
+
+      // Meta line
+      const meta = [r.Date?`Date: ${r.Date}`:'', r.ShipType?`Ship: ${r.ShipType}`:'', (r.Name&&r.Name!=='Anonymous')?`Candidate: ${r.Name}`:''].filter(Boolean).join('   |   ');
+      if (meta) { doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.setTextColor(100,130,150); doc.text(meta, M, y); y+=5; }
+
+      // divider
+      doc.setDrawColor(45,90,142); doc.setLineWidth(0.3); doc.line(M,y,W-M,y); y+=6;
+
+      // Surveyors
+      if (r.Internal||r.External) {
+        doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.setTextColor(160,130,60);
+        doc.text('SURVEYORS', M, y); y+=5;
+        doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(40,40,40);
+        if (r.Internal) { need(6); doc.text(`Internal:  ${r.Internal}`, M+4, y); y+=6; }
+        if (r.External) { need(6); doc.text(`External:  ${r.External}`, M+4, y); y+=6; }
+        y+=3;
+      }
+
+      // Questions
+      if (r.Questions) {
+        need(12);
+        doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.setTextColor(160,130,60);
+        doc.text('QUESTIONS ASKED', M, y); y+=5;
+        const qStart = y;
+        doc.setFont('helvetica','normal'); doc.setFontSize(10); doc.setTextColor(30,30,30);
+        const qLines = doc.splitTextToSize(r.Questions, CW-6);
+        qLines.forEach(l => { need(6); doc.text(l, M+6, y); y+=5.2; });
+        // blue left border
+        doc.setDrawColor(45,90,142); doc.setLineWidth(0.8); doc.line(M+1, qStart-2, M+1, y);
+        y+=4;
+      }
+
+      // Remarks
+      if (r.Remarks) {
+        need(12);
+        doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.setTextColor(160,130,60);
+        doc.text('SURVEYOR REMARKS / ADVICE', M, y); y+=5;
+        const rStart = y;
+        doc.setFont('helvetica','italic'); doc.setFontSize(10); doc.setTextColor(70,70,70);
+        const rLines = doc.splitTextToSize(r.Remarks, CW-6);
+        rLines.forEach(l => { need(6); doc.text(l, M+6, y); y+=5.2; });
+        // gold left border
+        doc.setDrawColor(180,140,60); doc.setLineWidth(0.8); doc.line(M+1, rStart-2, M+1, y);
+      }
+
+      // page footer
+      doc.setFontSize(7); doc.setFont('helvetica','normal'); doc.setTextColor(160,160,160);
+      doc.text('MEO Class-I Oral Exam Question Bank · mmd-oral-questions.github.io', M, H-6);
+      doc.text(`${idx+1} / ${records.length}`, W-M, H-6, {align:'right'});
+    });
+
+    // save file
+    const tag = [mm,re,kw].filter(Boolean).join('_').replace(/\s+/g,'')||'All';
+    const today = new Date().toISOString().slice(0,10);
+    doc.save(`MEO_QuestionBank_${tag}_${today}.pdf`);
+    toast('✅ PDF saved!');
+
+  } catch(err) {
+    console.error(err); toast('❌ PDF error: ' + err.message);
+  } finally {
+    btn.disabled=false; btn.textContent='📄 Save as PDF';
+  }
 }
 
 // ════════════════════════════════════════════════════════
@@ -718,7 +857,7 @@ function filterEntries() {
 async function loadStats() {
   if (!SCRIPT_URL) return;
   try {
-    const res = await fetch(SCRIPT_URL + '?action=get');
+    const res = await fetch(SCRIPT_URL+'?action=get');
     const rows = await res.json();
     allEntries = (Array.isArray(rows)?rows:[]).filter(r=>r.Questions||r.Result);
     updateStats(allEntries);
@@ -726,105 +865,47 @@ async function loadStats() {
 }
 
 function updateStats(records) {
-  const total = records.length;
-  const survs = new Set();
-  let passes = 0;
-  records.forEach(r => {
-    if (r.Internal) survs.add(r.Internal.trim().toLowerCase());
-    if (r.External) survs.add(r.External.trim().toLowerCase());
-    if (r.Result==='Pass') passes++;
-  });
+  const total=records.length; const survs=new Set(); let passes=0;
+  records.forEach(r=>{ if(r.Internal) survs.add(r.Internal.trim().toLowerCase()); if(r.External) survs.add(r.External.trim().toLowerCase()); if(r.Result==='Pass') passes++; });
   const pct = total ? Math.round(passes/total*100)+'%' : '—';
-  setText('stat-total', total||'—');
-  setText('stat-surv',  survs.size||'—');
-  setText('stat-pass',  pct);
+  setText('stat-total', total||'—'); setText('stat-surv', survs.size||'—'); setText('stat-pass', pct);
 }
 
-function setText(id, val) {
-  const el = document.getElementById(id);
-  if (el) el.textContent = val;
-}
+function setText(id,val) { const el=document.getElementById(id); if(el) el.textContent=val; }
 
 // ════════════════════════════════════════════════════════
 //  CONFIG SAVE
 // ════════════════════════════════════════════════════════
 function saveConfig() {
-  const url = document.getElementById('cfg-url').value.trim();
+  const url = document.getElementById('cfg-url')?.value.trim();
   const status = document.getElementById('cfg-status');
-  if (!url || !url.startsWith('https://script.google.com')) {
-    status.className = 'cfg-status cfg-err';
-    status.textContent = '✗ That doesn\'t look like a valid Apps Script URL.';
-    return;
-  }
-  SCRIPT_URL = url;
-  localStorage.setItem('meo_url', url);
-  status.className = 'cfg-status cfg-ok';
-  status.textContent = '✓ URL saved! The form is now connected to your Google Sheet.';
-  toast('✅ Connected to Google Sheets!');
+  if (!url||!url.startsWith('https://script.google.com')) { status.className='cfg-status cfg-err'; status.textContent='✗ Invalid URL.'; return; }
+  SCRIPT_URL=url; localStorage.setItem('meo_url',url);
+  status.className='cfg-ok'; status.textContent='✓ Saved!'; toast('✅ Connected!');
 }
 
 // ════════════════════════════════════════════════════════
-//  FIELD EDITOR (Setup → Modify Fields tab)
+//  FIELD EDITOR
 // ════════════════════════════════════════════════════════
 function renderFieldEditor() {
   const list = document.getElementById('field-list');
-  list.innerHTML = FIELDS.map((f, i) => {
-    const isCore = f.core;
-    const typeOptions = ['text','textarea','date','select','surveyor','result']
-      .map(t => `<option value="${t}" ${f.type===t?'selected':''}>${t}</option>`).join('');
-    return `
-    <div class="field-row" id="frow-${i}">
-      <input type="text" value="${esc(f.label)}" onchange="updateField(${i},'label',this.value)" ${isCore?'style="opacity:.6"':''}>
-      <select onchange="updateField(${i},'type',this.value)" ${isCore?'disabled':''}>
-        ${typeOptions}
-      </select>
-      <button class="del-btn" onclick="deleteField(${i})" ${isCore?'disabled title="Core field"':''}>🗑</button>
-    </div>`;
+  if (!list) return;
+  list.innerHTML = FIELDS.map((f,i)=>{
+    const isCore=f.core;
+    const typeOptions=['text','textarea','date','select','surveyor','result'].map(t=>`<option value="${t}" ${f.type===t?'selected':''}>${t}</option>`).join('');
+    return `<div class="field-row" id="frow-${i}"><input type="text" value="${esc(f.label)}" onchange="updateField(${i},'label',this.value)" ${isCore?'style="opacity:.6"':''}><select onchange="updateField(${i},'type',this.value)" ${isCore?'disabled':''}>${typeOptions}</select><button class="del-btn" onclick="deleteField(${i})" ${isCore?'disabled title="Core field"':''}>🗑</button></div>`;
   }).join('');
 }
-
-function updateField(i, key, val) {
-  FIELDS[i][key] = val;
-}
-
-function deleteField(i) {
-  if (FIELDS[i].core) { toast('⚠ Core fields cannot be deleted'); return; }
-  FIELDS.splice(i, 1);
-  renderFieldEditor();
-}
-
-function addFieldRow() {
-  FIELDS.push({ id:'Custom_'+Date.now(), label:'New Field', type:'text', required:false });
-  renderFieldEditor();
-}
-
-function applyFieldChanges() {
-  // Sync label → id for non-core fields
-  FIELDS.forEach(f => {
-    if (!f.core) f.id = f.label.replace(/\s+/g,'_');
-  });
-  localStorage.setItem('meo_fields', JSON.stringify(FIELDS));
-  buildForm();
-  toast('✅ Fields updated and saved!');
-  renderFieldEditor();
-}
+function updateField(i,key,val) { FIELDS[i][key]=val; }
+function deleteField(i) { if(FIELDS[i].core){toast('⚠ Core fields cannot be deleted');return;} FIELDS.splice(i,1); renderFieldEditor(); }
+function addFieldRow() { FIELDS.push({id:'Custom_'+Date.now(),label:'New Field',type:'text',required:false}); renderFieldEditor(); }
+function applyFieldChanges() { FIELDS.forEach(f=>{if(!f.core) f.id=f.label.replace(/\s+/g,'_');}); localStorage.setItem('meo_fields',JSON.stringify(FIELDS)); buildForm(); toast('✅ Fields updated!'); renderFieldEditor(); }
 
 // ════════════════════════════════════════════════════════
 //  UTILS
 // ════════════════════════════════════════════════════════
-function esc(s) {
-  return String(s||'')
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/\n/g,'<br>');
-}
-
-function toast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  clearTimeout(t._timer);
-  t._timer = setTimeout(() => t.classList.remove('show'), 3200);
-}
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'); }
+function toast(msg) { const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._timer); t._timer=setTimeout(()=>t.classList.remove('show'),3200); }
 
 // ════════════════════════════════════════════════════════
 //  INIT
@@ -832,12 +913,7 @@ function toast(msg) {
 loadState();
 buildForm();
 loadStats();
-
-// Populate config URL box if already saved
-if (SCRIPT_URL) {
-  const el = document.getElementById('cfg-url');
-  if (el) el.value = SCRIPT_URL;
-}
+if (SCRIPT_URL) { const el=document.getElementById('cfg-url'); if(el) el.value=SCRIPT_URL; }
 </script>
 </body>
 </html>
