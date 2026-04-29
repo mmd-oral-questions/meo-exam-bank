@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MEO Oral Exam Question Bank</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0a1628; --deep: #0d1f3c; --ocean: #1a3a5c;
+    --steel: #2d5a8e; --horizon: #4a90c4; --foam: #a8d4f0;
+    --white: #f0f4f8; --gold: #c9a84c; --gold-light: #e8c96a;
+    --pass: #2ecc71; --fail: #e74c3c; --pending: #f39c12;
+    --text: #d0dce8; --text-dim: #7a95b0;
+    --border: rgba(74,144,196,0.2); --card: rgba(13,31,60,0.85);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family:'IBM Plex Sans',sans-serif;
+    background:var(--navy); color:var(--text);
+    min-height:100vh; overflow-x:hidden;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(ellipse at 20% 50%,rgba(26,58,92,.6) 0%,transparent 60%),
+      radial-gradient(ellipse at 80% 20%,rgba(45,90,142,.3) 0%,transparent 50%),
+      radial-gradient(ellipse at 60% 80%,rgba(10,22,40,.8) 0%,transparent 50%);
+  }
+  body::after {
+    content:''; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background-image:
+      linear-gradient(rgba(74,144,196,.04) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(74,144,196,.04) 1px,transparent 1px);
+    background-size:60px 60px;
+  }
+  .app { position:relative; z-index:1; }
+
+  /* ── HEADER ── */
+  header {
+    border-bottom:1px solid var(--border); padding:0 40px;
+    background:rgba(10,22,40,.92); backdrop-filter:blur(12px);
+    position:sticky; top:0; z-index:100;
+  }
+  .header-inner {
+    max-width:1200px; margin:0 auto;
+    display:flex; align-items:center; justify-content:space-between; padding:14px 0;
+  }
+  .logo { display:flex; align-items:center; gap:14px; }
+  .logo-anchor {
+    width:40px; height:40px; border:2px solid var(--gold); border-radius:50%;
+    display:flex; align-items:center; justify-content:center; font-size:18px;
+  }
+  .logo-text h1 { font-family:'Playfair Display',serif; font-size:17px; color:var(--white); }
+  .logo-text p { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--gold); letter-spacing:2px; }
+  nav { display:flex; gap:4px; }
+  .nav-btn {
+    padding:8px 18px; background:transparent; border:1px solid transparent;
+    border-radius:4px; color:var(--text-dim); font-family:'IBM Plex Mono',monospace;
+    font-size:11px; letter-spacing:1px; cursor:pointer; transition:all .2s; text-transform:uppercase;
+  }
+  .nav-btn:hover { color:var(--text); border-color:var(--border); }
+  .nav-btn.active { background:var(--steel); border-color:var(--horizon); color:var(--white); }
+
+  /* ── MAIN ── */
+  main { max-width:1200px; margin:0 auto; padding:40px; }
+  .view { display:none; animation:fadeUp .4s ease; }
+  .view.active { display:block; }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:translateY(0)} }
+
+  /* ── HERO ── */
+  .hero { text-align:center; padding:60px 0 48px; }
+  .hero-badge {
+    display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:11px;
+    letter-spacing:3px; color:var(--gold); border:1px solid rgba(201,168,76,.3);
+    padding:6px 16px; border-radius:20px; margin-bottom:24px; text-transform:uppercase;
+  }
+  .hero h2 {
+    font-family:'Playfair Display',serif; font-size:clamp(32px,6vw,60px);
+    font-weight:900; color:var(--white); line-height:1.1; margin-bottom:16px;
+  }
+  .hero h2 span { color:var(--gold); }
+  .hero p { font-size:15px; color:var(--text-dim); max-width:540px; margin:0 auto 36px; line-height:1.7; }
+  .hero-btns { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+  .btn-primary {
+    padding:14px 32px; background:linear-gradient(135deg,var(--steel),var(--ocean));
+    border:1px solid var(--horizon); border-radius:6px; color:var(--white);
+    font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:2px;
+    text-transform:uppercase; cursor:pointer; transition:opacity .2s;
+  }
+  .btn-primary:hover { opacity:.85; }
+  .btn-ghost {
+    padding:14px 32px; background:transparent; border:1px solid var(--border);
+    border-radius:6px; color:var(--text); font-family:'IBM Plex Mono',monospace;
+    font-size:12px; letter-spacing:2px; text-transform:uppercase; cursor:pointer; transition:all .2s;
+  }
+  .btn-ghost:hover { border-color:var(--horizon); }
+  .stats-row {
+    display:flex; justify-content:center; gap:48px;
+    margin-top:48px; padding-top:40px; border-top:1px solid var(--border); flex-wrap:wrap;
+  }
+  .stat { text-align:center; }
+  .stat-num { font-family:'Playfair Display',serif; font-size:36px; font-weight:700; color:var(--gold); display:block; }
+  .stat-label { font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--text-dim); letter-spacing:1.5px; text-transform:uppercase; margin-top:4px; }
+
+  /* ── FORM ── */
+  .form-card {
+    background:var(--card); border:1px solid var(--border); border-radius:12px;
+    padding:48px; backdrop-filter:blur(8px); max-width:820px; margin:0 auto;
+  }
+  .form-title { font-family:'Playfair Display',serif; font-size:26px; color:var(--white); margin-bottom:6px; }
+  .form-subtitle { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--gold); letter-spacing:2px; text-transform:uppercase; margin-bottom:36px; }
+  .form-grid { display:grid; grid-template-columns:1fr 1fr; gap:22px; margin-bottom:22px; }
+  .form-group { display:flex; flex-direction:column; gap:8px; }
+  .form-group.full { grid-column:1/-1; }
+  label { font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:2px; color:var(--gold); text-transform:uppercase; }
+  label .req { color:var(--fail); margin-left:2px; }
+  label .opt { color:var(--text-dim); font-size:10px; margin-left:4px; text-transform:none; letter-spacing:0; }
+  input, select, textarea {
+    background:rgba(10,22,40,.8); border:1px solid var(--border); border-radius:6px;
+    padding:11px 15px; color:var(--white); font-family:'IBM Plex Sans',sans-serif;
+    font-size:14px; outline:none; transition:border-color .2s,box-shadow .2s; width:100%;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color:var(--horizon); box-shadow:0 0 0 3px rgba(74,144,196,.15);
+  }
+  select option { background:var(--deep); }
+  textarea { resize:vertical; min-height:130px; line-height:1.6; }
+
+  /* surveyor row */
+  .surveyor-wrap { position:relative; }
+  .surveyor-tag {
+    position:absolute; top:50%; right:10px; transform:translateY(-50%);
+    font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:1px;
+    padding:2px 8px; border-radius:10px; pointer-events:none;
+  }
+  .tag-int { background:rgba(201,168,76,.18); color:var(--gold); }
+  .tag-ext { background:rgba(74,144,196,.18); color:var(--horizon); }
+
+  /* result radio */
+  .result-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; }
+  .result-radio { display:none; }
+  .result-lbl {
+    display:flex; align-items:center; justify-content:center; gap:6px;
+    padding:11px; border:1px solid var(--border); border-radius:6px; cursor:pointer;
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:1px;
+    text-transform:uppercase; transition:all .2s; color:var(--text-dim);
+  }
+  .result-lbl:hover { border-color:var(--horizon); color:var(--text); }
+  .result-radio:checked + .lbl-pass { background:rgba(46,204,113,.15); border-color:var(--pass); color:var(--pass); }
+  .result-radio:checked + .lbl-fail { background:rgba(231,76,60,.15); border-color:var(--fail); color:var(--fail); }
+  .result-radio:checked + .lbl-pend { background:rgba(243,156,18,.15); border-color:var(--pending); color:var(--pending); }
+
+  .submit-btn {
+    width:100%; padding:15px; background:linear-gradient(135deg,var(--steel),var(--ocean));
+    border:1px solid var(--horizon); border-radius:6px; color:var(--white);
+    font-family:'IBM Plex Mono',monospace; font-size:13px; letter-spacing:2px;
+    text-transform:uppercase; cursor:pointer; transition:opacity .2s; margin-top:28px;
+  }
+  .submit-btn:hover { opacity:.85; }
+  .submit-btn:disabled { opacity:.4; cursor:not-allowed; }
+
+  .success-msg {
+    display:none; text-align:center; padding:32px;
+    background:rgba(46,204,113,.08); border:1px solid rgba(46,204,113,.25);
+    border-radius:8px; margin-top:20px;
+  }
+  .success-msg.show { display:block; }
+  .success-msg h3 { font-family:'Playfair Display',serif; font-size:22px; color:var(--pass); margin-bottom:8px; }
+  .success-msg p { color:var(--text-dim); font-size:14px; }
+
+  /* ── BROWSE ── */
+  .browse-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; flex-wrap:wrap; gap:14px; }
+  .browse-header h2 { font-family:'Playfair Display',serif; font-size:30px; color:var(--white); }
+  .filters { display:flex; gap:10px; flex-wrap:wrap; }
+  .filter-input {
+    background:var(--card); border:1px solid var(--border); border-radius:6px;
+    padding:9px 14px; color:var(--text); font-family:'IBM Plex Sans',sans-serif; font-size:13px; outline:none;
+  }
+  .filter-input:focus { border-color:var(--horizon); }
+  .entries-list { display:flex; flex-direction:column; gap:18px; }
+  .entry-card {
+    background:var(--card); border:1px solid var(--border); border-radius:10px;
+    padding:26px 30px; backdrop-filter:blur(8px); transition:border-color .2s,transform .2s; animation:fadeUp .3s ease;
+  }
+  .entry-card:hover { border-color:rgba(74,144,196,.4); transform:translateY(-2px); }
+  .entry-top { display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:14px; flex-wrap:wrap; gap:12px; }
+  .entry-meta { display:flex; align-items:center; gap:10px; flex-wrap:wrap; font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text-dim); }
+  .mmd-badge { padding:3px 10px; border-radius:10px; background:rgba(201,168,76,.12); border:1px solid rgba(201,168,76,.25); color:var(--gold-light); }
+  .result-badge { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:2px; padding:4px 12px; border-radius:12px; text-transform:uppercase; }
+  .b-pass { background:rgba(46,204,113,.15); color:var(--pass); border:1px solid rgba(46,204,113,.3); }
+  .b-fail { background:rgba(231,76,60,.15); color:var(--fail); border:1px solid rgba(231,76,60,.3); }
+  .b-pend { background:rgba(243,156,18,.15); color:var(--pending); border:1px solid rgba(243,156,18,.3); }
+  .chips { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+  .chip {
+    display:inline-flex; align-items:center; gap:5px;
+    padding:4px 11px; border-radius:20px; font-family:'IBM Plex Mono',monospace; font-size:11px;
+  }
+  .chip-int { background:rgba(201,168,76,.1); border:1px solid rgba(201,168,76,.22); color:var(--gold-light); }
+  .chip-ext { background:rgba(74,144,196,.1); border:1px solid rgba(74,144,196,.22); color:var(--foam); }
+  .chip-dot { width:5px; height:5px; border-radius:50%; background:currentColor; }
+  .q-label { font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:2px; color:var(--text-dim); text-transform:uppercase; margin-bottom:8px; }
+  .q-text { font-size:14px; color:var(--text); line-height:1.8; white-space:pre-wrap; border-left:2px solid var(--steel); padding-left:14px; }
+  .r-text { font-size:14px; color:var(--text-dim); line-height:1.7; white-space:pre-wrap; border-left:2px solid var(--gold); padding-left:14px; }
+  .empty-state { text-align:center; padding:80px 40px; color:var(--text-dim); }
+  .empty-state h3 { font-family:'Playfair Display',serif; font-size:22px; color:var(--text); margin-bottom:8px; margin-top:16px; }
+
+  /* ── SETUP ── */
+  .setup-card {
+    background:var(--card); border:1px solid var(--border); border-radius:12px;
+    padding:48px; max-width:820px; margin:0 auto;
+  }
+  .setup-card h2 { font-family:'Playfair Display',serif; font-size:26px; color:var(--white); margin-bottom:6px; }
+  .setup-subtitle { font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--gold); letter-spacing:2px; text-transform:uppercase; margin-bottom:32px; }
+
+  /* tabs inside setup */
+  .setup-tabs { display:flex; gap:4px; margin-bottom:32px; border-bottom:1px solid var(--border); }
+  .stab {
+    padding:10px 20px; background:transparent; border:none; border-bottom:2px solid transparent;
+    color:var(--text-dim); font-family:'IBM Plex Mono',monospace; font-size:12px;
+    letter-spacing:1px; cursor:pointer; transition:all .2s; margin-bottom:-1px;
+  }
+  .stab:hover { color:var(--text); }
+  .stab.active { border-bottom-color:var(--gold); color:var(--gold); }
+  .stab-content { display:none; }
+  .stab-content.active { display:block; animation:fadeUp .3s ease; }
+
+  .step { display:flex; gap:18px; margin-bottom:28px; padding-bottom:28px; border-bottom:1px solid var(--border); }
+  .step:last-of-type { border-bottom:none; margin-bottom:0; padding-bottom:0; }
+  .step-num {
+    width:34px; height:34px; border-radius:50%; background:var(--steel); border:1px solid var(--horizon);
+    display:flex; align-items:center; justify-content:center; font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--white); flex-shrink:0;
+  }
+  .step-content h3 { font-size:15px; font-weight:600; color:var(--white); margin-bottom:7px; }
+  .step-content p { font-size:13px; color:var(--text-dim); line-height:1.7; margin-bottom:6px; }
+  .step-content a { color:var(--horizon); text-decoration:none; }
+  .step-content a:hover { text-decoration:underline; }
+  .code-block {
+    background:rgba(10,22,40,.9); border:1px solid var(--border); border-radius:6px;
+    padding:12px 16px; font-family:'IBM Plex Mono',monospace; font-size:12px; color:var(--foam);
+    margin-top:10px; overflow-x:auto; line-height:1.8; white-space:pre;
+  }
+  .highlight { color:var(--gold); }
+
+  /* config section */
+  .config-section { margin-top:32px; padding-top:28px; border-top:1px solid var(--border); }
+  .cfg-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:14px; }
+  .save-btn {
+    padding:11px 28px; background:linear-gradient(135deg,var(--gold),#a07830);
+    border:none; border-radius:6px; color:var(--navy); font-family:'IBM Plex Mono',monospace;
+    font-size:12px; letter-spacing:1px; text-transform:uppercase; cursor:pointer; font-weight:600; transition:opacity .2s;
+  }
+  .save-btn:hover { opacity:.85; }
+  .cfg-status { font-family:'IBM Plex Mono',monospace; font-size:11px; margin-top:10px; padding:8px 14px; border-radius:4px; display:none; }
+  .cfg-ok { display:block; background:rgba(46,204,113,.1); color:var(--pass); border:1px solid rgba(46,204,113,.2); }
+  .cfg-err { display:block; background:rgba(231,76,60,.1); color:var(--fail); border:1px solid rgba(231,76,60,.2); }
+
+  /* modify fields section */
+  .field-editor { margin-top:28px; }
+  .field-list { display:flex; flex-direction:column; gap:10px; margin-bottom:16px; }
+  .field-row {
+    display:grid; grid-template-columns:1fr 1fr auto; gap:10px; align-items:center;
+    background:rgba(10,22,40,.6); border:1px solid var(--border); border-radius:6px; padding:10px 14px;
+  }
+  .field-row input, .field-row select { padding:7px 10px; font-size:13px; }
+  .del-btn {
+    background:rgba(231,76,60,.15); border:1px solid rgba(231,76,60,.3); color:var(--fail);
+    border-radius:4px; padding:6px 12px; cursor:pointer; font-size:14px; transition:all .2s;
+  }
+  .del-btn:hover { background:rgba(231,76,60,.3); }
+  .add-field-btn {
+    padding:9px 20px; background:transparent; border:1px dashed var(--border);
+    border-radius:6px; color:var(--text-dim); font-family:'IBM Plex Mono',monospace;
+    font-size:12px; cursor:pointer; transition:all .2s; width:100%;
+  }
+  .add-field-btn:hover { border-color:var(--horizon); color:var(--text); }
+  .apply-fields-btn {
+    padding:11px 24px; background:linear-gradient(135deg,var(--steel),var(--ocean));
+    border:1px solid var(--horizon); border-radius:6px; color:var(--white);
+    font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:1px;
+    text-transform:uppercase; cursor:pointer; margin-top:14px; transition:opacity .2s;
+  }
+  .apply-fields-btn:hover { opacity:.85; }
+
+  /* loading */
+  .loading { display:flex; align-items:center; justify-content:center; gap:12px; padding:50px; color:var(--text-dim); font-family:'IBM Plex Mono',monospace; font-size:13px; }
+  .spinner { width:20px; height:20px; border:2px solid var(--border); border-top-color:var(--horizon); border-radius:50%; animation:spin .8s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+
+  footer { border-top:1px solid var(--border); padding:22px 40px; text-align:center; font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--text-dim); letter-spacing:1px; margin-top:80px; }
+  footer span { color:var(--gold); }
+
+  .toast {
+    position:fixed; bottom:28px; right:28px; background:var(--deep); border:1px solid var(--horizon);
+    border-radius:8px; padding:13px 20px; font-family:'IBM Plex Mono',monospace; font-size:13px;
+    color:var(--white); z-index:999; transform:translateY(80px); opacity:0; transition:all .3s;
+  }
+  .toast.show { transform:translateY(0); opacity:1; }
+
+  @media(max-width:640px) {
+    main, header { padding:16px; }
+    .form-grid, .cfg-row, .field-row { grid-template-columns:1fr; }
+    .form-card, .setup-card { padding:20px; }
+    .result-grid { grid-template-columns:1fr 1fr; }
+    nav { display:none; }
+    .stats-row { gap:20px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-anchor">⚓</div>
+      <div class="logo-text">
+        <h1>MEO Question Bank</h1>
+        <p>MMD India · Class I Orals</p>
+      </div>
+    </div>
+    <nav>
+      <button class="nav-btn active" onclick="showView('home')">Home</button>
+      <button class="nav-btn" onclick="showView('submit')">Submit Report</button>
+      <button class="nav-btn" onclick="showView('browse')">Browse Questions</button>
+      <button class="nav-btn" onclick="showView('setup')">⚙ Setup</button>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <!-- ══ HOME ══ -->
+  <div id="view-home" class="view active">
+    <div class="hero">
+      <div class="hero-badge">⚓ Community Knowledge Base</div>
+      <h2>Share Your <span>Oral Exam</span><br>Experience</h2>
+      <p>Every candidate who submits their questions makes it easier for the next one. Build the collective knowledge of MEO candidates across India.</p>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="showView('submit')">📋 Submit My Report</button>
+        <button class="btn-ghost" onclick="showView('browse')">🔍 Browse Questions</button>
+      </div>
+      <div class="stats-row">
+        <div class="stat"><span class="stat-num" id="stat-total">—</span><span class="stat-label">Reports Submitted</span></div>
+        <div class="stat"><span class="stat-num" id="stat-surv">—</span><span class="stat-label">Surveyors Tracked</span></div>
+        <div class="stat"><span class="stat-num" id="stat-pass">—</span><span class="stat-label">Pass Rate</span></div>
+        <div class="stat"><span class="stat-num" id="stat-mmd">4</span><span class="stat-label">MMDs Covered</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ SUBMIT ══ -->
+  <div id="view-submit" class="view">
+    <div class="form-card">
+      <div class="form-title">Submit Exam Report</div>
+      <div class="form-subtitle">Your contribution helps future candidates</div>
+      <div id="dynamic-form"></div>
+      <button class="submit-btn" id="submit-btn" onclick="submitForm()">⚓ Submit Report</button>
+      <div class="success-msg" id="success-msg">
+        <div style="font-size:48px">✅</div>
+        <h3>Report Submitted!</h3>
+        <p>Thank you. Your report is now live and visible to all candidates.</p>
+        <button class="btn-ghost" style="margin-top:16px;" onclick="resetForm()">Submit Another</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ BROWSE ══ -->
+  <div id="view-browse" class="view">
+    <div class="browse-header">
+      <h2>Question Archive</h2>
+      <div class="filters">
+        <input class="filter-input" type="text" id="fil-surv" placeholder="🔍 Surveyor name..." oninput="filterEntries()">
+        <select class="filter-input" id="fil-mmd" onchange="filterEntries()">
+          <option value="">All MMDs</option>
+          <option>Mumbai</option>
+          <option>Kolkata</option>
+          <option>Chennai</option>
+          <option>Kochi</option>
+        </select>
+        <select class="filter-input" id="fil-result" onchange="filterEntries()">
+          <option value="">All Results</option>
+          <option>Pass</option>
+          <option>Fail</option>
+          <option>Pending</option>
+        </select>
+      </div>
+    </div>
+    <div id="entries-list" class="entries-list">
+      <div class="loading"><div class="spinner"></div>Loading...</div>
+    </div>
+  </div>
+
+  <!-- ══ SETUP ══ -->
+  <div id="view-setup" class="view">
+    <div class="setup-card">
+      <h2>Setup & Customise</h2>
+      <div class="setup-subtitle">Connect Google Sheets · Modify Form Fields</div>
+
+      <div class="setup-tabs">
+        <button class="stab active" onclick="switchTab('tab-gsheet')">📊 Google Sheets Setup</button>
+        <button class="stab" onclick="switchTab('tab-fields')">🔧 Modify Form Fields</button>
+      </div>
+
+      <!-- TAB 1: Google Sheets -->
+      <div id="tab-gsheet" class="stab-content active">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h3>Create a Google Sheet</h3>
+            <p>Go to <a href="https://sheets.google.com" target="_blank">sheets.google.com</a> → create a new blank sheet. Name it <strong>MEO Exam Bank</strong>.</p>
+            <p>In <strong>Row 1</strong>, type these column headers exactly (one per cell, A to K):</p>
+            <div class="code-block"><span class="highlight">A</span>: Timestamp   <span class="highlight">B</span>: Name      <span class="highlight">C</span>: MMD
+<span class="highlight">D</span>: Date        <span class="highlight">E</span>: Internal  <span class="highlight">F</span>: External
+<span class="highlight">G</span>: ShipType    <span class="highlight">H</span>: ExamClass <span class="highlight">I</span>: Questions
+<span class="highlight">J</span>: Remarks     <span class="highlight">K</span>: Result</div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h3>Open Apps Script</h3>
+            <p>In your Google Sheet → click <strong>Extensions</strong> in the top menu → click <strong>Apps Script</strong>. A new tab opens.</p>
+            <p>Delete all existing code in the editor. Then <strong>copy and paste</strong> this entire script:</p>
+            <div class="code-block">function doPost(e) {
+  var sheet = SpreadsheetApp
+    .getActiveSpreadsheet()
+    .getActiveSheet();
+  var data = JSON.parse(e.postData.contents);
+  sheet.appendRow([
+    new Date(),       // Timestamp
+    data.Name,
+    data.MMD,
+    data.Date,
+    data.Internal,
+    data.External,
+    data.ShipType,
+    data.ExamClass,
+    data.Questions,
+    data.Remarks,
+    data.Result
+  ]);
+  return ContentService
+    .createTextOutput(JSON.stringify({status:"ok"}))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function doGet(e) {
+  var sheet = SpreadsheetApp
+    .getActiveSpreadsheet()
+    .getActiveSheet();
+  var rows = sheet.getDataRange().getValues();
+  var headers = rows[0];
+  var data = rows.slice(1).map(function(row) {
+    var obj = {};
+    headers.forEach(function(h, i) { obj[h] = row[i]; });
+    return obj;
+  });
+  return ContentService
+    .createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON);
+}</div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h3>Deploy as Web App</h3>
+            <p>In Apps Script → click <strong>Deploy</strong> (top right) → <strong>New deployment</strong></p>
+            <p>→ Type: <strong>Web app</strong> → Execute as: <strong>Me</strong> → Who has access: <strong>Anyone</strong> → Click <strong>Deploy</strong></p>
+            <p>→ Copy the <strong>Web app URL</strong> that appears (looks like: <code style="color:var(--foam);font-size:11px;">https://script.google.com/macros/s/XXXXX/exec</code>)</p>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-content">
+            <h3>Paste the URL below & Save</h3>
+            <p>That's it — no tokens, no Base IDs, nothing else needed.</p>
+          </div>
+        </div>
+
+        <div class="config-section">
+          <div class="form-subtitle" style="margin-bottom:14px;">Your Google Apps Script URL</div>
+          <input type="text" id="cfg-url" placeholder="https://script.google.com/macros/s/.../exec" style="margin-bottom:12px;">
+          <br>
+          <button class="save-btn" onclick="saveConfig()">Save URL</button>
+          <div class="cfg-status" id="cfg-status"></div>
+          <p style="font-size:12px;color:var(--text-dim);margin-top:14px;">
+            ⚠ The URL is saved in your browser only. To share the site with others,
+            paste the URL inside this HTML file: find the line <code style="color:var(--foam);">SCRIPT_URL = ''</code> and paste it there.
+          </p>
+        </div>
+      </div>
+
+      <!-- TAB 2: Modify Fields -->
+      <div id="tab-fields" class="stab-content">
+        <p style="font-size:14px;color:var(--text-dim);margin-bottom:20px;line-height:1.7;">
+          Add, remove, or rename form fields here. Changes apply immediately.
+          <strong style="color:var(--gold);">Note:</strong> If you add a new field, also add a matching column header to your Google Sheet.
+        </p>
+        <div class="field-list" id="field-list"></div>
+        <button class="add-field-btn" onclick="addFieldRow()">+ Add New Field</button>
+        <br>
+        <button class="apply-fields-btn" onclick="applyFieldChanges()">✓ Apply Changes & Save</button>
+        <p style="font-size:12px;color:var(--text-dim);margin-top:12px;">Fields marked CORE cannot be deleted (MMD, Surveyors, Questions, Result).</p>
+      </div>
+
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <p>MEO Question Bank · Built for <span>MEO Candidates across India</span> · Share freely in WhatsApp groups</p>
+</footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ════════════════════════════════════════════════════════
+//
+//  ███████  ██████  ██████  ███    ███     ██████  ██████  ███    ██ ███████ ██  ██████
+//  ██      ██    ██ ██   ██ ████  ████    ██      ██    ██ ████   ██ ██      ██ ██
+//  █████   ██    ██ ██████  ██ ████ ██    ██      ██    ██ ██ ██  ██ █████   ██ ██   ███
+//  ██      ██    ██ ██   ██ ██  ██  ██    ██      ██    ██ ██  ██ ██ ██      ██ ██    ██
+//  ██       ██████  ██   ██ ██      ██     ██████  ██████  ██   ████ ██      ██  ██████
+//
+//  ════════════════════════════════════════════════════════
+//  HOW TO CUSTOMISE THIS FILE
+//  ════════════════════════════════════════════════════════
+//
+//  1. CONNECT TO GOOGLE SHEETS
+//     Paste your Apps Script URL in the line below:
+//
+//     SCRIPT_URL = 'https://script.google.com/macros/s/YOUR_URL_HERE/exec'
+//
+//  2. ADD / REMOVE / RENAME FORM FIELDS
+//     Edit the FORM_FIELDS array below.
+//     Each field is one object like:
+//
+//     { id:'MyField', label:'My Field Label', type:'text', required:true }
+//
+//     Types available:
+//       'text'     → single-line text box
+//       'textarea' → multi-line text box
+//       'date'     → date picker
+//       'select'   → dropdown (add options:['A','B','C'])
+//       'surveyor' → special two-box row (internal + external)
+//       'result'   → special Pass/Fail/Pending radio row
+//
+//     core:true   → cannot be deleted from the UI editor
+//     full:true   → field spans full width
+//     required:true → mandatory field (shows red *)
+//
+//  ════════════════════════════════════════════════════════
+
+// ── STEP 1: Paste your Google Apps Script URL here ──────
+let SCRIPT_URL = 'function doPost(e) {
+  var sheet = SpreadsheetApp
+    .getActiveSpreadsheet()
+    .getActiveSheet();
+  var data = JSON.parse(e.postData.contents);
+  sheet.appendRow([
+    new Date(),
+    data.Name,
+    data.MMD,
+    data.Date,
+    data.Internal,
+    data.External,
+    data.ShipType,
+    data.ExamClass,
+    data.Questions,
+    data.Remarks,
+    data.Result
+  ]);
+  return ContentService
+    .createTextOutput(JSON.stringify({status:"ok"}))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function doGet(e) {
+  var sheet = SpreadsheetApp
+    .getActiveSpreadsheet()
+    .getActiveSheet();
+  var rows = sheet.getDataRange().getValues();
+  var headers = rows[0];
+  var data = rows.slice(1).map(function(row) {
+    var obj = {};
+    headers.forEach(function(h, i) { obj[h] = row[i]; });
+    return obj;
+  });
+  return ContentService
+    .createTextOutput(JSON.stringify(data))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+';
+
+// ── STEP 2: Define your form fields here ────────────────
+const DEFAULT_FIELDS = [
+  {
+    id:'Name', label:'Your Name', type:'text', required:false,
+    placeholder:'Anonymous if left blank'
+  },
+  {
+    id:'MMD', label:'MMD', type:'select', required:true, core:true,
+    options:['Mumbai','Kolkata','Chennai','Kochi']
+  },
+  {
+    id:'Date', label:'Exam Date', type:'date', required:true, core:true
+  },
+  {
+    id:'Surveyors', label:'Surveyors', type:'surveyor', required:true, core:true, full:true
+  },
+  {
+    id:'ShipType', label:'Ship Type', type:'select', required:false,
+    options:['Bulk Carrier','Oil Tanker','LNG Tanker','LPG Carrier','Chemical Tanker','Container Ship','General Cargo','RORO','Passenger Ship','Other']
+  },
+  {
+    id:'ExamClass', label:'Exam Class', type:'select', required:false,
+    options:['MEO Class I','MEO Class II','MEO Class IV','COC Revalidation']
+  },
+  {
+    id:'Questions', label:'Questions Asked', type:'textarea', required:true, core:true, full:true,
+    placeholder:'List all questions you remember — one per line. Even partial recall helps!'
+  },
+  {
+    id:'Remarks', label:'Surveyor Style / Advice', type:'textarea', required:false, full:true,
+    placeholder:'How was the surveyor\'s approach? What topics did they focus on? Any advice?'
+  },
+  {
+    id:'Result', label:'Result', type:'result', required:true, core:true, full:true
+  }
+];
+
+// ════════════════════════════════════════════════════════
+//  STATE
+// ════════════════════════════════════════════════════════
+let FIELDS = [];
+let allEntries = [];
+
+function loadState() {
+  const savedURL    = localStorage.getItem('meo_url');
+  const savedFields = localStorage.getItem('meo_fields');
+  if (savedURL) SCRIPT_URL = savedURL;
+  if (savedFields) {
+    try { FIELDS = JSON.parse(savedFields); } catch { FIELDS = [...DEFAULT_FIELDS]; }
+  } else {
+    FIELDS = [...DEFAULT_FIELDS];
+  }
+}
+
+// ════════════════════════════════════════════════════════
+//  NAV
+// ════════════════════════════════════════════════════════
+function showView(name) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('view-' + name).classList.add('active');
+  // highlight matching nav button
+  document.querySelectorAll('.nav-btn').forEach(b => {
+    if (
+      (name==='home'   && b.textContent.toLowerCase().includes('home'))   ||
+      (name==='submit' && b.textContent.toLowerCase().includes('submit')) ||
+      (name==='browse' && b.textContent.toLowerCase().includes('browse')) ||
+      (name==='setup'  && b.textContent.toLowerCase().includes('setup'))
+    ) b.classList.add('active');
+  });
+  if (name==='browse') loadEntries();
+  if (name==='home')   loadStats();
+  if (name==='setup')  renderFieldEditor();
+}
+
+function switchTab(id) {
+  document.querySelectorAll('.stab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.stab').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+  if (id==='tab-fields') renderFieldEditor();
+}
+
+// ════════════════════════════════════════════════════════
+//  DYNAMIC FORM BUILDER
+// ════════════════════════════════════════════════════════
+function buildForm() {
+  const container = document.getElementById('dynamic-form');
+  let html = '<div class="form-grid">';
+  FIELDS.forEach(f => {
+    const fullClass = f.full ? ' full' : '';
+    const req = f.required ? '<span class="req">*</span>' : '<span class="opt">(optional)</span>';
+    html += `<div class="form-group${fullClass}">`;
+    html += `<label>${f.label} ${req}</label>`;
+
+    if (f.type==='text') {
+      html += `<input type="text" id="ff-${f.id}" placeholder="${f.placeholder||''}">`;
+
+    } else if (f.type==='date') {
+      html += `<input type="date" id="ff-${f.id}">`;
+
+    } else if (f.type==='textarea') {
+      html += `<textarea id="ff-${f.id}" placeholder="${f.placeholder||''}"></textarea>`;
+
+    } else if (f.type==='select') {
+      html += `<select id="ff-${f.id}"><option value="">— Select —</option>`;
+      (f.options||[]).forEach(o => html += `<option>${o}</option>`);
+      html += `</select>`;
+
+    } else if (f.type==='surveyor') {
+      html += `<div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">`;
+      html += `<div class="surveyor-wrap"><input type="text" id="ff-Internal" placeholder="Internal surveyor name"><span class="surveyor-tag tag-int">INTERNAL</span></div>`;
+      html += `<div class="surveyor-wrap"><input type="text" id="ff-External" placeholder="External surveyor name"><span class="surveyor-tag tag-ext">EXTERNAL</span></div>`;
+      html += `</div>`;
+
+    } else if (f.type==='result') {
+      html += `<div class="result-grid">
+        <div><input type="radio" name="result" id="r-pass" value="Pass" class="result-radio"><label for="r-pass" class="result-lbl lbl-pass">✅ Pass</label></div>
+        <div><input type="radio" name="result" id="r-fail" value="Fail" class="result-radio"><label for="r-fail" class="result-lbl lbl-fail">❌ Fail</label></div>
+        <div><input type="radio" name="result" id="r-pend" value="Pending" class="result-radio" checked><label for="r-pend" class="result-lbl lbl-pend">⏳ Pending</label></div>
+      </div>`;
+    }
+
+    html += `</div>`;
+  });
+  html += '</div>';
+  container.innerHTML = html;
+
+  // Set today's date
+  const dateEl = document.getElementById('ff-Date');
+  if (dateEl) dateEl.valueAsDate = new Date();
+}
+
+// ════════════════════════════════════════════════════════
+//  SUBMIT
+// ════════════════════════════════════════════════════════
+async function submitForm() {
+  if (!SCRIPT_URL) {
+    toast('⚠ Please set up Google Sheets URL in Setup tab first');
+    showView('setup'); return;
+  }
+
+  // Collect values
+  const data = {};
+  let valid = true;
+  let firstInvalid = null;
+
+  FIELDS.forEach(f => {
+    if (f.type==='surveyor') {
+      data['Internal'] = document.getElementById('ff-Internal')?.value.trim() || '';
+      data['External'] = document.getElementById('ff-External')?.value.trim() || '';
+      if (f.required && (!data['Internal'] || !data['External'])) {
+        valid=false; if(!firstInvalid) firstInvalid='ff-Internal';
+      }
+    } else if (f.type==='result') {
+      data['Result'] = document.querySelector('input[name="result"]:checked')?.value || '';
+      if (f.required && !data['Result']) { valid=false; }
+    } else {
+      const el = document.getElementById('ff-'+f.id);
+      if (el) {
+        data[f.id] = el.value.trim ? el.value.trim() : el.value;
+        if (f.required && !data[f.id]) {
+          valid=false; if(!firstInvalid) firstInvalid='ff-'+f.id;
+        }
+      }
+    }
+  });
+
+  if (!valid) {
+    toast('⚠ Please fill all required fields');
+    if (firstInvalid) document.getElementById(firstInvalid)?.focus();
+    return;
+  }
+
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = '⏳ Submitting...';
+
+  try {
+    // Google Apps Script requires no-cors for POST from browser
+    await fetch(SCRIPT_URL, {
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(data)
+    });
+    document.getElementById('success-msg').classList.add('show');
+    btn.style.display = 'none';
+    toast('✅ Report submitted!');
+  } catch(e) {
+    toast('❌ Submit failed. Check your URL in Setup.');
+    btn.disabled = false;
+    btn.textContent = '⚓ Submit Report';
+  }
+}
+
+function resetForm() {
+  buildForm();
+  document.getElementById('success-msg').classList.remove('show');
+  const btn = document.getElementById('submit-btn');
+  btn.style.display = '';
+  btn.disabled = false;
+  btn.textContent = '⚓ Submit Report';
+}
+
+// ════════════════════════════════════════════════════════
+//  BROWSE / LOAD ENTRIES
+// ════════════════════════════════════════════════════════
+async function loadEntries() {
+  const list = document.getElementById('entries-list');
+  if (!SCRIPT_URL) {
+    list.innerHTML = `<div class="empty-state"><div style="font-size:48px;opacity:.5">⚙</div><h3>Setup Required</h3><p>Go to Setup tab → Google Sheets Setup and paste your Apps Script URL.</p></div>`;
+    return;
+  }
+  list.innerHTML = '<div class="loading"><div class="spinner"></div>Loading reports...</div>';
+  try {
+    const res = await fetch(SCRIPT_URL + '?action=get');
+    const rows = await res.json();
+    // Filter out empty rows
+    allEntries = (Array.isArray(rows) ? rows : []).filter(r => r.Questions || r.Result);
+    // Sort newest first by Timestamp
+    allEntries.sort((a,b) => new Date(b.Timestamp||0) - new Date(a.Timestamp||0));
+    renderEntries(allEntries);
+    updateStats(allEntries);
+  } catch(e) {
+    list.innerHTML = `<div class="empty-state"><div style="font-size:48px;opacity:.5">❌</div><h3>Could not load</h3><p>${e.message}. Check your Setup URL.</p></div>`;
+  }
+}
+
+function renderEntries(records) {
+  const list = document.getElementById('entries-list');
+  if (!records.length) {
+    list.innerHTML = `<div class="empty-state"><div style="font-size:48px;opacity:.5">📭</div><h3>No reports yet</h3><p>Be the first to submit an exam report!</p></div>`;
+    return;
+  }
+  list.innerHTML = records.map(r => {
+    const rc = r.Result==='Pass'?'b-pass':r.Result==='Fail'?'b-fail':'b-pend';
+    const ri = r.Result==='Pass'?'✅':r.Result==='Fail'?'❌':'⏳';
+    return `
+    <div class="entry-card">
+      <div class="entry-top">
+        <div>
+          <div class="entry-meta">
+            ${r.MMD?`<span class="mmd-badge">📍 ${r.MMD}</span>`:''}
+            ${r.Date?`<span>📅 ${r.Date}</span>`:''}
+            ${r.ExamClass?`<span>· ${r.ExamClass}</span>`:''}
+            ${r.ShipType?`<span>· ${r.ShipType}</span>`:''}
+            ${r.Name&&r.Name!=='Anonymous'&&r.Name?`<span>· 👤 ${esc(r.Name)}</span>`:''}
+          </div>
+        </div>
+        <span class="result-badge ${rc}">${ri} ${r.Result||'Pending'}</span>
+      </div>
+      <div class="chips">
+        ${r.Internal?`<span class="chip chip-int"><span class="chip-dot"></span>INT: ${esc(r.Internal)}</span>`:''}
+        ${r.External?`<span class="chip chip-ext"><span class="chip-dot"></span>EXT: ${esc(r.External)}</span>`:''}
+      </div>
+      ${r.Questions?`<div class="q-label">Questions Asked</div><div class="q-text">${esc(r.Questions)}</div>`:''}
+      ${r.Remarks?`<div class="q-label" style="margin-top:14px;">Surveyor Remarks / Advice</div><div class="r-text">${esc(r.Remarks)}</div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function filterEntries() {
+  const sv = document.getElementById('fil-surv').value.toLowerCase();
+  const mm = document.getElementById('fil-mmd').value;
+  const re = document.getElementById('fil-result').value;
+  const f = allEntries.filter(r => {
+    const survOk = !sv || (r.Internal||'').toLowerCase().includes(sv) || (r.External||'').toLowerCase().includes(sv);
+    const mmdOk  = !mm || r.MMD===mm;
+    const resOk  = !re || r.Result===re;
+    return survOk && mmdOk && resOk;
+  });
+  renderEntries(f);
+}
+
+// ════════════════════════════════════════════════════════
+//  STATS
+// ════════════════════════════════════════════════════════
+async function loadStats() {
+  if (!SCRIPT_URL) return;
+  try {
+    const res = await fetch(SCRIPT_URL + '?action=get');
+    const rows = await res.json();
+    allEntries = (Array.isArray(rows)?rows:[]).filter(r=>r.Questions||r.Result);
+    updateStats(allEntries);
+  } catch {}
+}
+
+function updateStats(records) {
+  const total = records.length;
+  const survs = new Set();
+  let passes = 0;
+  records.forEach(r => {
+    if (r.Internal) survs.add(r.Internal.trim().toLowerCase());
+    if (r.External) survs.add(r.External.trim().toLowerCase());
+    if (r.Result==='Pass') passes++;
+  });
+  const pct = total ? Math.round(passes/total*100)+'%' : '—';
+  setText('stat-total', total||'—');
+  setText('stat-surv',  survs.size||'—');
+  setText('stat-pass',  pct);
+}
+
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.textContent = val;
+}
+
+// ════════════════════════════════════════════════════════
+//  CONFIG SAVE
+// ════════════════════════════════════════════════════════
+function saveConfig() {
+  const url = document.getElementById('cfg-url').value.trim();
+  const status = document.getElementById('cfg-status');
+  if (!url || !url.startsWith('https://script.google.com')) {
+    status.className = 'cfg-status cfg-err';
+    status.textContent = '✗ That doesn\'t look like a valid Apps Script URL.';
+    return;
+  }
+  SCRIPT_URL = url;
+  localStorage.setItem('meo_url', url);
+  status.className = 'cfg-status cfg-ok';
+  status.textContent = '✓ URL saved! The form is now connected to your Google Sheet.';
+  toast('✅ Connected to Google Sheets!');
+}
+
+// ════════════════════════════════════════════════════════
+//  FIELD EDITOR (Setup → Modify Fields tab)
+// ════════════════════════════════════════════════════════
+function renderFieldEditor() {
+  const list = document.getElementById('field-list');
+  list.innerHTML = FIELDS.map((f, i) => {
+    const isCore = f.core;
+    const typeOptions = ['text','textarea','date','select','surveyor','result']
+      .map(t => `<option value="${t}" ${f.type===t?'selected':''}>${t}</option>`).join('');
+    return `
+    <div class="field-row" id="frow-${i}">
+      <input type="text" value="${esc(f.label)}" onchange="updateField(${i},'label',this.value)" ${isCore?'style="opacity:.6"':''}>
+      <select onchange="updateField(${i},'type',this.value)" ${isCore?'disabled':''}>
+        ${typeOptions}
+      </select>
+      <button class="del-btn" onclick="deleteField(${i})" ${isCore?'disabled title="Core field"':''}>🗑</button>
+    </div>`;
+  }).join('');
+}
+
+function updateField(i, key, val) {
+  FIELDS[i][key] = val;
+}
+
+function deleteField(i) {
+  if (FIELDS[i].core) { toast('⚠ Core fields cannot be deleted'); return; }
+  FIELDS.splice(i, 1);
+  renderFieldEditor();
+}
+
+function addFieldRow() {
+  FIELDS.push({ id:'Custom_'+Date.now(), label:'New Field', type:'text', required:false });
+  renderFieldEditor();
+}
+
+function applyFieldChanges() {
+  // Sync label → id for non-core fields
+  FIELDS.forEach(f => {
+    if (!f.core) f.id = f.label.replace(/\s+/g,'_');
+  });
+  localStorage.setItem('meo_fields', JSON.stringify(FIELDS));
+  buildForm();
+  toast('✅ Fields updated and saved!');
+  renderFieldEditor();
+}
+
+// ════════════════════════════════════════════════════════
+//  UTILS
+// ════════════════════════════════════════════════════════
+function esc(s) {
+  return String(s||'')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/\n/g,'<br>');
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+// ════════════════════════════════════════════════════════
+//  INIT
+// ════════════════════════════════════════════════════════
+loadState();
+buildForm();
+loadStats();
+
+// Populate config URL box if already saved
+if (SCRIPT_URL) {
+  const el = document.getElementById('cfg-url');
+  if (el) el.value = SCRIPT_URL;
+}
+</script>
+</body>
+</html>
