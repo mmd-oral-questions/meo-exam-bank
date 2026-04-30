@@ -344,7 +344,7 @@ footer span{color:var(--blue);font-weight:500;}
 <div class="toast" id="toast"></div>
 
 <script>
-let SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzw5kcqNbl-heZFIsJiyAdqrA2zRNgnSADQn4hf4VOtOuU_KZjztsbGBNrXl85Wzb-w/exec';
+let SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxf7kn5KddHvMHOhP749Ss8tFB3eYvyw27V6ak_4lmNn8cvIyasmAYXlntiTGsy1sAQ/exec';
 
 // Known MMD Mumbai surveyors with aliases. The first item is the canonical name;
 // other items are alternative spellings/short forms that also match in autocomplete.
@@ -558,9 +558,9 @@ function renderEntries(records, kw) {
       <div class="entry-top">
         <div class="entry-meta">
           ${r.MMD?`<span class="mmd-badge">📍 ${r.MMD}</span>`:''}
-          ${r.Date?`<span class="entry-date">📅 ${r.Date}</span>`:''}
+          ${r.Date?`<span class="entry-date">Date: ${formatDate(r.Date)}</span>`:''}
           ${r.ShipType?`<span class="entry-ship">· ${r.ShipType}</span>`:''}
-          ${r.Name&&r.Name!=='Anonymous'?`<span class="entry-date">· 👤 ${esc(r.Name)}</span>`:''}
+          ${r.Name&&r.Name!=='Anonymous'?`<span class="entry-date">· ${esc(r.Name)}</span>`:''}
         </div>
         <span class="result-badge ${rc}">${ri}</span>
       </div>
@@ -598,6 +598,20 @@ function clearFilters() {
 }
 
 /* PDF */
+// Format date string from Google Sheets (ISO or YYYY-MM-DD) to DD/MM/YYYY IST
+function formatDate(raw) {
+  if (!raw) return '';
+  try {
+    const d = new Date(raw);
+    if (isNaN(d)) return String(raw);
+    // Convert UTC to IST (UTC+5:30)
+    const ist = new Date(d.getTime() + (5.5 * 60 * 60 * 1000));
+    const dd  = String(ist.getUTCDate()).padStart(2,'0');
+    const mm  = String(ist.getUTCMonth()+1).padStart(2,'0');
+    const yyyy= ist.getUTCFullYear();
+    return `${dd}/${mm}/${yyyy}`;
+  } catch(e) { return String(raw); }
+}
 async function exportPDF() {
   const btn=document.getElementById('pdf-btn');
   btn.disabled=true; btn.textContent='⏳ Generating...';
@@ -638,10 +652,12 @@ async function exportPDF() {
       doc.text('MEO Class-I Oral Exam Question Bank',M,5.5);
       doc.text(`${idx+1} / ${records.length}`,W-M,5.5,{align:'right'});
       y=18;
-      if(r.MMD){doc.setFontSize(10);doc.setFont('helvetica','bold');doc.setTextColor(26,86,219);doc.text(`📍 ${r.MMD}`,M,y);}
+      // MMD (no emoji — jsPDF can't render them)
+      if(r.MMD){doc.setFontSize(10);doc.setFont('helvetica','bold');doc.setTextColor(26,86,219);doc.text(`MMD: ${r.MMD}`,M,y);}
       const rc=r.Result==='Pass'?[22,163,74]:[220,38,38];
       doc.setFontSize(10);doc.setFont('helvetica','bold');doc.setTextColor(...rc);doc.text(r.Result||'',W-M,y,{align:'right'});y+=7;
-      const meta=[r.Date?`Date: ${r.Date}`:'',r.ShipType?`Ship: ${r.ShipType}`:'',r.Name&&r.Name!=='Anonymous'?`Candidate: ${r.Name}`:''].filter(Boolean).join('   |   ');
+      // Date formatted to IST DD/MM/YYYY
+      const meta=[r.Date?`Date: ${formatDate(r.Date)}`:'',r.ShipType?`Ship: ${r.ShipType}`:'',r.Name&&r.Name!=='Anonymous'?`Candidate: ${r.Name}`:''].filter(Boolean).join('   |   ');
       if(meta){doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(107,114,128);doc.text(meta,M,y);y+=5;}
       doc.setDrawColor(229,231,235);doc.setLineWidth(0.3);doc.line(M,y,W-M,y);y+=6;
       if(r.Internal||r.External){
@@ -742,9 +758,16 @@ function onDateFilterChange() {
 
 function dateInRange(dateStr, mode) {
   if (!mode || !dateStr) return true;
-  const d = new Date(dateStr);
-  if (isNaN(d)) return true;
-  const now = new Date();
+  // Parse the date — convert ISO UTC to IST date
+  let d;
+  try {
+    const raw = new Date(dateStr);
+    if (isNaN(raw)) return true;
+    // Shift to IST for accurate date comparison
+    d = new Date(raw.getTime() + (5.5 * 60 * 60 * 1000));
+    d = new Date(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
+  } catch(e) { return true; }
+  const now = new Date(); now.setHours(0,0,0,0);
   if (mode === '1m') { const c=new Date(now); c.setMonth(c.getMonth()-1); return d >= c; }
   if (mode === '2m') { const c=new Date(now); c.setMonth(c.getMonth()-2); return d >= c; }
   if (mode === '3m') { const c=new Date(now); c.setMonth(c.getMonth()-3); return d >= c; }
@@ -754,7 +777,7 @@ function dateInRange(dateStr, mode) {
     const from = document.getElementById('fil-from')?.value;
     const to   = document.getElementById('fil-to')?.value;
     if (from && d < new Date(from)) return false;
-    if (to)   { const t = new Date(to); t.setHours(23,59,59); if (d > t) return false; }
+    if (to && d > new Date(to)) return false;
     return true;
   }
   return true;
