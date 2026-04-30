@@ -152,6 +152,31 @@ textarea{resize:vertical;min-height:130px;line-height:1.6;}
 .spinner{width:18px;height:18px;border:2px solid var(--border);border-top-color:var(--blue);border-radius:50%;animation:spin .7s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
 
+/* MMD STATS TABLE */
+.mmd-stats-card{background:var(--white);border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);margin-top:20px;overflow:hidden;}
+.mmd-stats-header{padding:18px 24px 14px;border-bottom:1px solid var(--border);}
+.mmd-stats-title{font-size:15px;font-weight:700;color:var(--text);}
+.mmd-stats-sub{font-size:12px;color:var(--text-dim);margin-top:2px;}
+.mmd-table-wrap{overflow-x:auto;}
+.mmd-table{width:100%;border-collapse:collapse;font-size:13px;}
+.mmd-table thead tr{background:var(--bg);}
+.mmd-table th{padding:10px 20px;text-align:left;font-size:11px;font-weight:700;color:var(--text-dim);text-transform:uppercase;letter-spacing:.6px;border-bottom:1px solid var(--border);}
+.mmd-table td{padding:13px 20px;border-bottom:1px solid var(--border);color:var(--text-mid);}
+.mmd-table tbody tr:last-child td{border-bottom:none;}
+.mmd-table tbody tr:hover{background:var(--bg);}
+.mmd-table tfoot td{padding:12px 20px;font-weight:700;color:var(--text);background:var(--bg);border-top:2px solid var(--border);}
+.mmd-name{font-weight:600;color:var(--text);}
+.mmd-entries{font-weight:600;color:var(--blue);}
+.pass-rate{display:inline-flex;align-items:center;gap:6px;}
+.pass-bar{height:6px;border-radius:3px;background:var(--border);width:60px;overflow:hidden;}
+.pass-fill{height:100%;border-radius:3px;background:var(--pass);}
+.pass-fill.low{background:var(--fail);}
+.pass-fill.mid{background:var(--pending);}
+.mmd-loading{text-align:center;color:var(--text-dim);padding:24px;font-size:13px;}
+.mmd-empty{text-align:center;color:var(--text-dim);padding:20px;font-size:13px;}
+.surv-chips{display:flex;flex-wrap:wrap;gap:4px;}
+.surv-chip{background:var(--blue-light);color:var(--blue);font-size:11px;padding:2px 8px;border-radius:4px;font-weight:500;}
+
 footer{border-top:1px solid var(--border);padding:18px 24px;text-align:center;font-size:12px;color:var(--text-dim);background:var(--white);margin-top:auto;}
 footer span{color:var(--blue);font-weight:500;}
 .toast{position:fixed;bottom:24px;right:24px;background:var(--text);border-radius:8px;padding:12px 18px;font-size:13px;color:white;z-index:999;transform:translateY(70px);opacity:0;transition:all .3s;box-shadow:var(--shadow-md);}
@@ -247,11 +272,29 @@ footer span{color:var(--blue);font-weight:500;}
         <button class="btn-primary" onclick="showView('submit')">📋 Submit Questions</button>
         <button class="btn-secondary" onclick="showView('browse')">🔍 Search Questions</button>
       </div>
-      <div class="stats-row">
-        <div class="stat"><span class="stat-num" id="stat-total">—</span><span class="stat-label">Entries Submitted</span></div>
-        <div class="stat"><span class="stat-num" id="stat-surv">—</span><span class="stat-label">Surveyors Tracked</span></div>
-        <div class="stat"><span class="stat-num" id="stat-pass">—</span><span class="stat-label">Pass Rate</span></div>
-        <div class="stat"><span class="stat-num" id="stat-mmd">4</span><span class="stat-label">MMDs Covered</span></div>
+    </div>
+
+    <!-- MMD Stats Table -->
+    <div class="mmd-stats-card">
+      <div class="mmd-stats-header">
+        <div class="mmd-stats-title">MMD-wise Statistics</div>
+        <div class="mmd-stats-sub">External surveyors tracked · Updated live</div>
+      </div>
+      <div class="mmd-table-wrap">
+        <table class="mmd-table" id="mmd-table">
+          <thead>
+            <tr>
+              <th>MMD</th>
+              <th>Entries</th>
+              <th>External Surveyors</th>
+              <th>Pass Rate</th>
+            </tr>
+          </thead>
+          <tbody id="mmd-table-body">
+            <tr><td colspan="4" class="mmd-loading">Loading...</td></tr>
+          </tbody>
+          <tfoot id="mmd-table-foot"></tfoot>
+        </table>
       </div>
     </div>
   </div>
@@ -649,60 +692,118 @@ async function exportPDF() {
       return(!kw||b.includes(kw))&&(!sv||(r.Internal||'').toLowerCase().includes(sv)||(r.External||'').toLowerCase().includes(sv))&&(!mm||r.MMD===mm)&&(!re||r.Result===re)&&dateInRange(r.Date,dt);
     });
     if(!records.length){toast('⚠ No entries to export');btn.disabled=false;btn.textContent='📄 Save as PDF';return;}
-    function need(h){if(y+h>H-M){doc.addPage();y=M;}}
-    // Cover — clean white
-    doc.setFillColor(255,255,255);doc.rect(0,0,W,H,'F');
-    doc.setFillColor(26,86,219);doc.rect(0,0,W,8,'F');
-    doc.setFontSize(28);doc.setFont('helvetica','bold');doc.setTextColor(26,86,219);
-    doc.text('MEO Class-I Oral Exam',W/2,70,{align:'center'});
-    doc.text('Question Bank',W/2,84,{align:'center'});
-    doc.setFont('helvetica','normal');doc.setFontSize(13);doc.setTextColor(107,114,128);
-    doc.text('MMD India · Community Submitted Questions',W/2,98,{align:'center'});
+
+    // need(h) — adds new page if remaining space < h mm
+    function need(h) {
+      if (y + h > H - M) { doc.addPage(); y = M; addPageHeader(); }
+    }
+
+    // Running page number
+    let pageNum = 1;
+    function addPageHeader() {
+      doc.setFillColor(26,86,219); doc.rect(0,0,W,7,'F');
+      doc.setFontSize(7); doc.setFont('helvetica','normal'); doc.setTextColor(255,255,255);
+      doc.text('MEO Class-I Oral Exam Question Bank', M, 5);
+      doc.text(`Page ${pageNum}`, W-M, 5, {align:'right'});
+      pageNum++;
+    }
+
+    // ── COVER PAGE ──
+    doc.setFillColor(255,255,255); doc.rect(0,0,W,H,'F');
+    doc.setFillColor(26,86,219);   doc.rect(0,0,W,8,'F');
+    doc.setFontSize(28); doc.setFont('helvetica','bold'); doc.setTextColor(26,86,219);
+    doc.text('MEO Class-I Oral Exam', W/2, 70, {align:'center'});
+    doc.text('Question Bank',         W/2, 84, {align:'center'});
+    doc.setFont('helvetica','normal'); doc.setFontSize(13); doc.setTextColor(107,114,128);
+    doc.text('MMD India · Community Submitted Questions', W/2, 98, {align:'center'});
     const fp=[kw?`Keyword: "${kw}"`:'',mm?`MMD: ${mm}`:'',sv?`Surveyor: ${sv}`:'',re?`Result: ${re}`:''].filter(Boolean);
-    if(fp.length){doc.setFontSize(10);doc.setTextColor(107,114,128);doc.text('Filters: '+fp.join('  ·  '),W/2,112,{align:'center'});}
-    doc.setFontSize(11);doc.setTextColor(107,114,128);
-    doc.text(`${records.length} entr${records.length!==1?'ies':'y'}  ·  Generated ${new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})}`,W/2,124,{align:'center'});
-    doc.setDrawColor(229,231,235);doc.setLineWidth(0.5);doc.line(M+10,136,W-M-10,136);
-    doc.setFontSize(9);doc.setTextColor(156,163,175);doc.text('For candidate use only · Share freely',W/2,146,{align:'center'});
-    // Reports
-    records.forEach((r,idx)=>{
-      doc.addPage();y=M;
-      doc.setFillColor(26,86,219);doc.rect(0,0,W,8,'F');
-      doc.setFontSize(7);doc.setFont('helvetica','normal');doc.setTextColor(255,255,255);
-      doc.text('MEO Class-I Oral Exam Question Bank',M,5.5);
-      doc.text(`${idx+1} / ${records.length}`,W-M,5.5,{align:'right'});
-      y=18;
-      // MMD (no emoji — jsPDF can't render them)
-      if(r.MMD){doc.setFontSize(10);doc.setFont('helvetica','bold');doc.setTextColor(26,86,219);doc.text(`MMD: ${r.MMD}`,M,y);}
-      const rc=r.Result==='Pass'?[22,163,74]:[220,38,38];
-      doc.setFontSize(10);doc.setFont('helvetica','bold');doc.setTextColor(...rc);doc.text(r.Result||'',W-M,y,{align:'right'});y+=7;
-      // Date formatted to IST DD/MM/YYYY
-      const meta=[r.Date?`Date: ${formatDate(r.Date)}`:'',r.ShipType?`Ship: ${r.ShipType}`:'',r.Name&&r.Name!=='Anonymous'?`Candidate: ${r.Name}`:''].filter(Boolean).join('   |   ');
-      if(meta){doc.setFontSize(8);doc.setFont('helvetica','normal');doc.setTextColor(107,114,128);doc.text(meta,M,y);y+=5;}
-      doc.setDrawColor(229,231,235);doc.setLineWidth(0.3);doc.line(M,y,W-M,y);y+=6;
-      if(r.Internal||r.External){
-        doc.setFontSize(7);doc.setFont('helvetica','bold');doc.setTextColor(107,114,128);doc.text('SURVEYORS',M,y);y+=5;
-        doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(30,30,30);
-        if(r.Internal){need(6);doc.text(`Internal:  ${r.Internal}`,M+4,y);y+=6;}
-        if(r.External){need(6);doc.text(`External:  ${r.External}`,M+4,y);y+=6;}
-        y+=2;
+    if(fp.length){ doc.setFontSize(10); doc.setTextColor(107,114,128); doc.text('Filters: '+fp.join('  ·  '), W/2, 112, {align:'center'}); }
+    doc.setFontSize(11); doc.setTextColor(107,114,128);
+    doc.text(`${records.length} entr${records.length!==1?'ies':'y'}  ·  Generated ${new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'})}`, W/2, 124, {align:'center'});
+    doc.setDrawColor(229,231,235); doc.setLineWidth(0.5); doc.line(M+10,136,W-M-10,136);
+    doc.setFontSize(9); doc.setTextColor(156,163,175);
+    doc.text('For candidate use only · Share freely', W/2, 146, {align:'center'});
+
+    // ── CONTENT PAGES — continuous flow ──
+    doc.addPage(); y = M; addPageHeader(); y = 14;
+
+    records.forEach((r, idx) => {
+      // Estimate minimum height needed for this entry header (MMD+result+meta+divider)
+      // If less than 40mm left, start new page
+      if (y > H - M - 40) { doc.addPage(); y = M; addPageHeader(); y = 14; }
+
+      // Entry number badge
+      doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.setTextColor(156,163,175);
+      doc.text(`#${idx+1}`, M, y); y += 5;
+
+      // MMD + Result on same line
+      if (r.MMD) {
+        doc.setFontSize(10); doc.setFont('helvetica','bold'); doc.setTextColor(26,86,219);
+        doc.text(`MMD: ${r.MMD}`, M, y);
       }
-      if(r.Questions){
-        need(12);doc.setFontSize(7);doc.setFont('helvetica','bold');doc.setTextColor(107,114,128);doc.text('QUESTIONS ASKED',M,y);y+=5;
-        const qs=y;doc.setFont('helvetica','normal');doc.setFontSize(10);doc.setTextColor(30,30,30);
-        doc.splitTextToSize(r.Questions,CW-6).forEach(l=>{need(6);doc.text(l,M+6,y);y+=5.2;});
-        doc.setDrawColor(26,86,219);doc.setLineWidth(0.8);doc.line(M+1,qs-2,M+1,y);y+=4;
+      const rc = r.Result==='Pass' ? [22,163,74] : [220,38,38];
+      doc.setFontSize(10); doc.setFont('helvetica','bold'); doc.setTextColor(...rc);
+      doc.text(r.Result||'', W-M, y, {align:'right'}); y += 6;
+
+      // Meta line — date, ship, candidate
+      const meta = [
+        r.Date     ? `Date: ${formatDate(r.Date)}`  : '',
+        r.ShipType ? `Ship: ${r.ShipType}`           : '',
+        r.Name && r.Name!=='Anonymous' ? `Candidate: ${r.Name}` : ''
+      ].filter(Boolean).join('   |   ');
+      if (meta) {
+        doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.setTextColor(107,114,128);
+        doc.text(meta, M, y); y += 5;
       }
-      if(r.Remarks){
-        need(12);doc.setFontSize(7);doc.setFont('helvetica','bold');doc.setTextColor(107,114,128);doc.text('SURVEYOR REMARKS / ADVICE',M,y);y+=5;
-        const rs=y;doc.setFont('helvetica','italic');doc.setFontSize(10);doc.setTextColor(75,85,99);
-        doc.splitTextToSize(r.Remarks,CW-6).forEach(l=>{need(6);doc.text(l,M+6,y);y+=5.2;});
-        doc.setDrawColor(245,158,11);doc.setLineWidth(0.8);doc.line(M+1,rs-2,M+1,y);
+
+      // Surveyors
+      if (r.Internal || r.External) {
+        doc.setFontSize(8); doc.setFont('helvetica','normal'); doc.setTextColor(55,65,81);
+        const survLine = [r.Internal?`INT: ${r.Internal}`:'', r.External?`EXT: ${r.External}`:''].filter(Boolean).join('   |   ');
+        need(5); doc.text(survLine, M, y); y += 5;
       }
-      doc.setFontSize(7);doc.setFont('helvetica','normal');doc.setTextColor(156,163,175);
-      doc.text('MEO Class-I Oral Exam Question Bank',M,H-6);
-      doc.text(`${idx+1} / ${records.length}`,W-M,H-6,{align:'right'});
+
+      // Thin divider
+      doc.setDrawColor(209,213,219); doc.setLineWidth(0.2); doc.line(M, y, W-M, y); y += 4;
+
+      // Questions
+      if (r.Questions) {
+        doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.setTextColor(107,114,128);
+        need(8); doc.text('QUESTIONS ASKED', M, y); y += 4;
+        const qs = y;
+        doc.setFont('helvetica','normal'); doc.setFontSize(9.5); doc.setTextColor(30,30,30);
+        doc.splitTextToSize(r.Questions, CW-5).forEach(l => { need(5); doc.text(l, M+5, y); y += 5; });
+        doc.setDrawColor(26,86,219); doc.setLineWidth(0.7); doc.line(M+1, qs-1, M+1, y);
+        y += 3;
+      }
+
+      // Remarks
+      if (r.Remarks) {
+        doc.setFontSize(7); doc.setFont('helvetica','bold'); doc.setTextColor(107,114,128);
+        need(8); doc.text('SURVEYOR REMARKS / ADVICE', M, y); y += 4;
+        const rs = y;
+        doc.setFont('helvetica','italic'); doc.setFontSize(9.5); doc.setTextColor(75,85,99);
+        doc.splitTextToSize(r.Remarks, CW-5).forEach(l => { need(5); doc.text(l, M+5, y); y += 5; });
+        doc.setDrawColor(245,158,11); doc.setLineWidth(0.7); doc.line(M+1, rs-1, M+1, y);
+        y += 3;
+      }
+
+      // Thick separator between entries (except last)
+      if (idx < records.length - 1) {
+        need(10);
+        doc.setDrawColor(26,86,219); doc.setLineWidth(0.4); doc.line(M, y+2, W-M, y+2);
+        y += 10;
+      }
     });
+
+    // Footer on every page
+    const totalPages = doc.getNumberOfPages();
+    for (let p = 2; p <= totalPages; p++) {
+      doc.setPage(p);
+      doc.setFontSize(7); doc.setFont('helvetica','normal'); doc.setTextColor(156,163,175);
+      doc.text('MEO Class-I Oral Exam Question Bank · For candidate use only', M, H-5);
+      doc.text(`${p-1} / ${totalPages-1}`, W-M, H-5, {align:'right'});
+    }
     const tag=[mm,re,kw].filter(Boolean).join('_').replace(/\s+/g,'')||'All';
     doc.save(`MEO_QuestionBank_${tag}_${new Date().toISOString().slice(0,10)}.pdf`);
     toast('✅ PDF saved!');
@@ -720,10 +821,79 @@ async function loadStats() {
   } catch{}
 }
 function updateStats(records) {
-  const total=records.length,survs=new Set();let passes=0;
-  records.forEach(r=>{if(r.Internal)survs.add(r.Internal.trim().toLowerCase());if(r.External)survs.add(r.External.trim().toLowerCase());if(r.Result==='Pass')passes++;});
-  const pct=total?Math.round(passes/total*100)+'%':'—';
-  [['stat-total',total||'—'],['stat-surv',survs.size||'—'],['stat-pass',pct]].forEach(([id,v])=>{const e=document.getElementById(id);if(e)e.textContent=v;});
+  const MMDS = ['Mumbai','Kolkata','Chennai','Kochi'];
+  const tbody = document.getElementById('mmd-table-body');
+  const tfoot = document.getElementById('mmd-table-foot');
+  if (!tbody) return;
+
+  if (!records.length) {
+    tbody.innerHTML = '<tr><td colspan="4" class="mmd-empty">No entries yet. Be the first to submit!</td></tr>';
+    if (tfoot) tfoot.innerHTML = '';
+    return;
+  }
+
+  // Build per-MMD stats — external surveyors only
+  let totalEntries = 0, totalPass = 0, allExtSurveyors = new Set();
+
+  const rows = MMDS.map(mmd => {
+    const mmdEntries = records.filter(r => r.MMD === mmd);
+    const count  = mmdEntries.length;
+    const passes = mmdEntries.filter(r => r.Result === 'Pass').length;
+    const rate   = count ? Math.round(passes / count * 100) : null;
+
+    // External surveyors only — deduplicated, trimmed
+    const extSurvs = new Set();
+    mmdEntries.forEach(r => {
+      if (r.External && r.External.trim()) {
+        extSurvs.add(r.External.trim());
+        allExtSurveyors.add(r.External.trim());
+      }
+    });
+
+    totalEntries += count;
+    totalPass    += passes;
+
+    return { mmd, count, passes, rate, extSurvs: [...extSurvs] };
+  });
+
+  // Render table rows
+  tbody.innerHTML = rows.map(r => {
+    if (!r.count) {
+      return `<tr>
+        <td class="mmd-name">${r.mmd}</td>
+        <td class="mmd-entries">—</td>
+        <td style="color:var(--text-dim);font-size:12px;">No entries yet</td>
+        <td>—</td>
+      </tr>`;
+    }
+    const rate    = r.rate;
+    const fillCls = rate >= 60 ? '' : rate >= 40 ? 'mid' : 'low';
+    const survHTML = r.extSurvs.length
+      ? `<div class="surv-chips">${r.extSurvs.map(s=>`<span class="surv-chip">${esc(s)}</span>`).join('')}</div>`
+      : `<span style="color:var(--text-dim);font-size:12px;">—</span>`;
+    return `<tr>
+      <td class="mmd-name">${r.mmd}</td>
+      <td class="mmd-entries">${r.count}</td>
+      <td>${survHTML}</td>
+      <td>
+        <div class="pass-rate">
+          <span style="font-weight:600;color:${rate>=60?'var(--pass)':rate>=40?'var(--pending)':'var(--fail)'}">${rate}%</span>
+          <div class="pass-bar"><div class="pass-fill ${fillCls}" style="width:${rate}%"></div></div>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  // Footer totals
+  const totalRate = totalEntries ? Math.round(totalPass / totalEntries * 100) : 0;
+  if (tfoot) {
+    tfoot.innerHTML = `<tr>
+      <td>Total</td>
+      <td style="color:var(--blue)">${totalEntries}</td>
+      <td style="color:var(--text-dim);font-size:12px;">${allExtSurveyors.size} unique external surveyor${allExtSurveyors.size!==1?'s':''}</td>
+      <td style="color:${totalRate>=60?'var(--pass)':totalRate>=40?'var(--pending)':'var(--fail)'}">${totalRate}%</td>
+    </tr>`;
+  }
 }
 
 /* AUTOCOMPLETE — Surveyor name suggestions */
