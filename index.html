@@ -520,12 +520,32 @@ function resetForm() {
   btn.style.display=''; btn.disabled=false; btn.textContent='⚓ Submit Questions';
 }
 
+/* JSONP loader — bypasses CORS completely */
+function jsonpFetch(url) {
+  return new Promise(function(resolve, reject) {
+    const cbName = 'meo_cb_' + Date.now();
+    const script = document.createElement('script');
+    const timeout = setTimeout(function() {
+      cleanup(); reject(new Error('Request timed out'));
+    }, 15000);
+    function cleanup() {
+      clearTimeout(timeout);
+      delete window[cbName];
+      if (script.parentNode) script.parentNode.removeChild(script);
+    }
+    window[cbName] = function(data) { cleanup(); resolve(data); };
+    script.onerror = function() { cleanup(); reject(new Error('Script load failed')); };
+    script.src = url + (url.includes('?') ? '&' : '?') + 'callback=' + cbName;
+    document.head.appendChild(script);
+  });
+}
+
 /* BROWSE */
 async function loadEntries() {
   const list = document.getElementById('entries-list');
   list.innerHTML = '<div class="loading"><div class="spinner"></div>Loading questions...</div>';
   try {
-    const rows = await (await fetch(SCRIPT_URL+'?action=get')).json();
+    const rows = await jsonpFetch(SCRIPT_URL);
     allEntries = (Array.isArray(rows)?rows:[]).filter(r=>r.Questions||r.Result);
     allEntries.sort((a,b)=>new Date(b.Timestamp||0)-new Date(a.Timestamp||0));
     renderEntries(allEntries,''); updateStats(allEntries);
@@ -694,7 +714,7 @@ async function exportPDF() {
 async function loadStats() {
   if(!SCRIPT_URL) return;
   try {
-    const rows=await(await fetch(SCRIPT_URL+'?action=get')).json();
+    const rows = await jsonpFetch(SCRIPT_URL);
     allEntries=(Array.isArray(rows)?rows:[]).filter(r=>r.Questions||r.Result);
     updateStats(allEntries);
   } catch{}
